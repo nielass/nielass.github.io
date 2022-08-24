@@ -282,7 +282,7 @@
 </ol>
 <p>整体的框架如下图所示</p>
 <figure>
-<img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220823222256286.png" alt="image-20220823222256286" /><figcaption>image-20220823222256286</figcaption>
+<img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220823222256286.png" alt="Hierarchical Localization" /><figcaption>Hierarchical Localization</figcaption>
 </figure>
 <h2 id="hf-net-architecture">HF-Net Architecture</h2>
 <p>文章设计的网络主要包括两个部分</p>
@@ -306,31 +306,23 @@
 <p>SuperPoint使用了自监督的方法，大量使用了数据增强来保证训练的网络在应对不同光照条件，图像模糊等情况的时候有较好的性能。然而，作者认为，这种数据增强对局部特征的学习有很好的效果，但是会让全局特征的学习变得困难(challenging)。</p></li>
 </ul>
 <p>针对这两个问题，作者提出了使用Multi-task distilation来解决。作者主要使用了文章<a href="#ref2">[2]</a>中的方法，这篇论文我没有读过，在本文中作者也没有做更多的解释，在这里就直接拿作者给的结论了。根据这篇文章，作者设计出了下面这个Loss Function</p>
-<figure>
-<img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220823222056978.png" alt="image-20220823222056978" /><figcaption>image-20220823222056978</figcaption>
-</figure>
+<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220823222056978.png" /></p>
 <p>作者还提到了，这个设计可以用到其他的任务上去，特别是训练数据难以获取的多任务学习，以及一些compute-intensive的传统descriptors的情况。</p>
 <p>那么剩下的问题就是，如何选择多任务蒸馏中的Teacher了，作者是通过对比实验的结果解决了这个问题。</p>
 <ul>
 <li>作者首先对比了不同的detector的性能：</li>
 </ul>
-<figure>
-<img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220824085601258.png" alt="image-20220824085601258" /><figcaption>image-20220824085601258</figcaption>
-</figure>
+<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220824085601258.png" /></p>
 <p>可以发现SuperPoint是一个在Repeatability上和MLE的trade-off比较好的detector。虽然Harris看起来效果也不错，但为什么不选，后面说。</p>
 <ul>
 <li>之后是Descriptor</li>
 </ul>
-<figure>
-<img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220824090357564.png" alt="image-20220824090357564" /><figcaption>image-20220824090357564</figcaption>
-</figure>
+<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220824090357564.png" /></p>
 <p>在这里DOAP的效果是最好的（因为DOAP在HPatches上训练，所以这里没有列出结果）。作者这里做了一个将SuperPoint和Harris detector结合的实验，从中发现尽管Harris是一个可复现性（repeatability）高的detector，但是这二者结合的效果非常差。作者认为学习descriptors和对应的dectections是高度耦合的。</p>
 <ul>
 <li>最后作者在Aachen Day-Night数据集上继续测试</li>
 </ul>
-<figure>
-<img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220824090855093.png" alt="image-20220824090855093" /><figcaption>image-20220824090855093</figcaption>
-</figure>
+<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220824090855093.png" /></p>
 <p>实验结果显示，SuperPoint比DOAP对白天夜晚具有更高的鲁棒性，DOAP在夜晚的情况下性能下降，作者认为原因是SP基于复杂的数据增强。在这里如果对比NV+SP和NV+HF-Net两列，可以发现HF-Net的性能更好，但是HF-Net本身是由SP蒸馏得到，性能应该会比SP差一点。作者给出的理由是：</p>
 <blockquote>
 <p>Comparing NV+SP with NV+HF, we note that local HF-Net features perform better than the SuperPoint model that was used to train them. This demonstrates the benefits of multi-task distillation, where the supervision signal from the global teacher can improve intermediate features and help local descriptors.</p>
@@ -339,10 +331,10 @@
 <h2 id="experiments">Experiments</h2>
 <p>这部分就直接贴结果了，主要就是精度和速度。</p>
 <figure>
-<img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220824091810266.png" alt="image-20220824091810266" /><figcaption>image-20220824091810266</figcaption>
+<img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220824091810266.png" alt="Result 1" /><figcaption>Result 1</figcaption>
 </figure>
 <figure>
-<img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220824091753543.png" alt="image-20220824091753543" /><figcaption>image-20220824091753543</figcaption>
+<img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220824091753543.png" alt="Result 2" /><figcaption>Result 2</figcaption>
 </figure>
 <h1 id="reference">reference</h1>
 <ol type="1">

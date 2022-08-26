@@ -20,12 +20,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"nielass.xyz","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="这篇文章是学习HF-Net的一些笔记。 该论文介绍了一种两步定位的方法，第一步先通过图像检索的方式找出最优的图像及对应位姿，第二部通过局部特征匹配估计出当前位姿。 本文特点：  在定位数据集上达到SOTA性能 文中所提出的HF-Net可以同时输出关键点，局部描述子，以及全局描述子 在多任务学习用上了知识蒸馏">
+    <meta name="description" content="这篇文章是学习HF-Net的一些笔记。 该论文介绍了一种两步定位的方法，第一步先通过图像检索的方式找出最优的图像及对应位姿，第二部通过局部特征匹配估计出当前位姿。 论文特点：  在定位数据集上达到SOTA性能 文中所提出的HF-Net可以同时输出关键点，局部描述子，以及全局描述子 在多任务学习用上了知识蒸馏">
 <meta property="og:type" content="article">
 <meta property="og:title" content="论文笔记：From Coarse to Fine Robust Hierarchical Localization at Large Scale (HF-Net)">
-<meta property="og:url" content="https://nielass.xyz/2022/08/23/hfnet/index.html">
+<meta property="og:url" content="https://nielass.xyz/notes/hfnet/index.html">
 <meta property="og:site_name" content="The Library">
-<meta property="og:description" content="这篇文章是学习HF-Net的一些笔记。 该论文介绍了一种两步定位的方法，第一步先通过图像检索的方式找出最优的图像及对应位姿，第二部通过局部特征匹配估计出当前位姿。 本文特点：  在定位数据集上达到SOTA性能 文中所提出的HF-Net可以同时输出关键点，局部描述子，以及全局描述子 在多任务学习用上了知识蒸馏">
+<meta property="og:description" content="这篇文章是学习HF-Net的一些笔记。 该论文介绍了一种两步定位的方法，第一步先通过图像检索的方式找出最优的图像及对应位姿，第二部通过局部特征匹配估计出当前位姿。 论文特点：  在定位数据集上达到SOTA性能 文中所提出的HF-Net可以同时输出关键点，局部描述子，以及全局描述子 在多任务学习用上了知识蒸馏">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220824100406128.png">
 <meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220823222256286.png">
@@ -37,22 +37,22 @@
 <meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220824091810266.png">
 <meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220824091753543.png">
 <meta property="article:published_time" content="2022-08-23T10:53:25.000Z">
-<meta property="article:modified_time" content="2022-08-23T10:53:25.000Z">
+<meta property="article:modified_time" content="2022-08-23T22:00:00.000Z">
 <meta property="article:author" content="Nielass">
 <meta property="article:tag" content="ComputerVision">
 <meta property="article:tag" content="Descriptor">
-<meta property="article:tag" content="FRONT-END">
 <meta property="article:tag" content="VIO">
 <meta property="article:tag" content="KeyPoint">
+<meta property="article:tag" content="DeepLearning">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220824100406128.png">
 
 
-<link rel="canonical" href="https://nielass.xyz/2022/08/23/hfnet/">
+<link rel="canonical" href="https://nielass.xyz/notes/hfnet/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://nielass.xyz/2022/08/23/hfnet/","path":"2022/08/23/hfnet/","title":"论文笔记：From Coarse to Fine Robust Hierarchical Localization at Large Scale (HF-Net)"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://nielass.xyz/notes/hfnet/","path":"notes/hfnet/","title":"论文笔记：From Coarse to Fine Robust Hierarchical Localization at Large Scale (HF-Net)"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>论文笔记：From Coarse to Fine Robust Hierarchical Localization at Large Scale (HF-Net) | The Library</title>
@@ -153,7 +153,7 @@
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -197,7 +197,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://nielass.xyz/2022/08/23/hfnet/">
+    <link itemprop="mainEntityOfPage" href="https://nielass.xyz/notes/hfnet/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -227,6 +227,13 @@
       <span class="post-meta-item-text">Posted on</span>
 
       <time title="Created: 2022-08-23 12:53:25" itemprop="dateCreated datePublished" datetime="2022-08-23T12:53:25+02:00">2022-08-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2022-08-24 00:00:00" itemprop="dateModified" datetime="2022-08-24T00:00:00+02:00">2022-08-24</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -262,7 +269,7 @@
     <div class="post-body" itemprop="articleBody">
         <p>这篇文章是学习HF-Net的一些笔记。</p>
 <p>该论文介绍了一种两步定位的方法，第一步先通过图像检索的方式找出最优的图像及对应位姿，第二部通过局部特征匹配估计出当前位姿。</p>
-<p>本文特点：</p>
+<p>论文特点：</p>
 <ol type="1">
 <li>在定位数据集上达到SOTA性能</li>
 <li>文中所提出的HF-Net可以同时输出关键点，局部描述子，以及全局描述子</li>
@@ -360,20 +367,23 @@
           <div class="post-tags">
               <a href="/tags/ComputerVision/" rel="tag"># ComputerVision</a>
               <a href="/tags/Descriptor/" rel="tag"># Descriptor</a>
-              <a href="/tags/FRONT-END/" rel="tag"># FRONT-END</a>
               <a href="/tags/VIO/" rel="tag"># VIO</a>
               <a href="/tags/KeyPoint/" rel="tag"># KeyPoint</a>
+              <a href="/tags/DeepLearning/" rel="tag"># DeepLearning</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2022/08/22/smart/" rel="prev" title="SMART原则">
+                <a href="/notes/smart/" rel="prev" title="SMART原则">
                   <i class="fa fa-chevron-left"></i> SMART原则
                 </a>
             </div>
             <div class="post-nav-item">
+                <a href="/notes/superpoint/" rel="next" title="论文学习：SuperPoint Self-Supervised Interest Point Detection and Description">
+                  论文学习：SuperPoint Self-Supervised Interest Point Detection and Description <i class="fa fa-chevron-right"></i>
+                </a>
             </div>
           </div>
     </footer>

@@ -27,14 +27,26 @@
 <meta property="og:site_name" content="The Library">
 <meta property="og:description" content="这篇文章是我学习SuperPoint的笔记。 SuperPoint设计了一个自监督框架，可以同时提取特征点（keypoint detector）和描述子（descriptor）。 文章特点  全卷积网络（Fully-convolutional neural network architecture） 同时提取特征点及特征点描述 使用自监督训练框架Homographic Adaptation">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827212508325.png">
+<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827212332521.png">
+<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827212438312.png">
+<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827213737954.png">
+<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827214245803.png">
+<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827220345519.png">
+<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827221521818.png">
+<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827222739947.png">
+<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827222852485.png">
+<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827222814976.png">
+<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827222826591.png">
 <meta property="article:published_time" content="2022-08-25T08:23:14.000Z">
-<meta property="article:modified_time" content="2022-08-25T22:00:00.000Z">
+<meta property="article:modified_time" content="2022-08-26T22:00:00.000Z">
 <meta property="article:author" content="Nielass">
 <meta property="article:tag" content="Local Descriptor">
 <meta property="article:tag" content="Key Point">
 <meta property="article:tag" content="Self-Supervised Learning">
 <meta property="article:tag" content="Data Augmentation">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827212508325.png">
 
 
 <link rel="canonical" href="https://nielass.xyz/notes/superpoint/">
@@ -123,7 +135,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#reference"><span class="nav-number">2.</span> <span class="nav-text">reference</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#superpoint-architecture"><span class="nav-number">2.</span> <span class="nav-text">SuperPoint Architecture</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#shared-encoder"><span class="nav-number">2.1.</span> <span class="nav-text">Shared Encoder</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#interest-point-decoder"><span class="nav-number">2.2.</span> <span class="nav-text">Interest Point Decoder</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#descriptor-decoder"><span class="nav-number">2.3.</span> <span class="nav-text">Descriptor Decoder</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#training"><span class="nav-number">3.</span> <span class="nav-text">Training</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#loss-function"><span class="nav-number">3.1.</span> <span class="nav-text">Loss Function</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#base-detector"><span class="nav-number">3.2.</span> <span class="nav-text">Base Detector</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#homographic-adaptation"><span class="nav-number">3.3.</span> <span class="nav-text">Homographic Adaptation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#joint-training"><span class="nav-number">3.4.</span> <span class="nav-text">Joint Training</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#experiment"><span class="nav-number">4.</span> <span class="nav-text">Experiment</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#reference"><span class="nav-number">5.</span> <span class="nav-text">reference</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -222,7 +234,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2022-08-26 00:00:00" itemprop="dateModified" datetime="2022-08-26T00:00:00+02:00">2022-08-26</time>
+      <time title="Modified: 2022-08-27 00:00:00" itemprop="dateModified" datetime="2022-08-27T00:00:00+02:00">2022-08-27</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -278,9 +290,102 @@
 <li>Homographic Adaptation</li>
 <li>SuperPoint网络</li>
 </ol>
-<p>TODO</p>
+<h1 id="superpoint-architecture">SuperPoint Architecture</h1>
+<p>文章首先介绍了整体的网络结构。整个网络结构分为三个部分：</p>
+<ol type="1">
+<li>Shared Encoder</li>
+<li>Interest Point Decoder</li>
+<li>Descriptor Decoder</li>
+</ol>
+<figure>
+<img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827212508325.png" alt="image-20220827212508325" /><figcaption>image-20220827212508325</figcaption>
+</figure>
+<h2 id="shared-encoder">Shared Encoder</h2>
+<p>这部分是两个Decoder分享的网络部分。在分享的编码网络中，作者使用了VGG-Style的Encoder来降低输入图像的尺寸，各层包括了卷积层，三个pooling层和激活函数层。三个pooling层可以把尺寸为<span class="math inline">\(H \times W\)</span> 的图像变成<span class="math inline">\(H_c = H / 8， W_c = W / 8\)</span>。最终会生成一个空间维度较小，但是通道数较多的中间结果<span class="math inline">\(\mathcal{B}\in\mathbb{R}^{H_c\times W_c \times F}\)</span>。作者把所生成的结果中每一个位置称为cell。</p>
+<h2 id="interest-point-decoder">Interest Point Decoder</h2>
+<p>这个解码端用于检测特征点。最终的输出为原始图像中每个像素点是特征点的概率。作者在这里没有使用反卷积，因为这个操作的计算量很大而且会引入checkerboard artifacts，为了降低计算量，作者使用了explicit decoder（<em>sub-pixel convolution</em>, <em>depth to space</em> in TensorFlow, <em>pixel shuffle</em> in Pytorch)。</p>
+<p>这个Head的输入维度为<span class="math inline">\(H_c\times W_c \times 65\)</span>，这里的<span class="math inline">\(65\)</span>中的<span class="math inline">\(64\)</span>表示原图<span class="math inline">\(8\times 8\)</span>的局部不重叠区域，还有一个<span class="math inline">\(1\)</span>是作为dustbin，用来表示非特征点。作者这里做了一个channel-wise的softmax，然后通过slice来去掉这个dustbin，使维度变成<span class="math inline">\(H_c\times W_c \times 64\)</span>。最后通过上一段所说方法，reshape成<span class="math inline">\(H \times W\)</span>的图像。</p>
+<ul>
+<li>为什么要有这个dustbin，这里直接引用知乎大佬Realcat的分析<a href="#ref3">[3]</a></li>
+</ul>
+<blockquote>
+<p>之所以要设置65个通道，这是因为算法要应对不存在特征点的情况。</p>
+<p>注意到之后的一步中使用了softmax，也就是说沿着通道维度把各个数值通过运算后加和为1。如果没有Dustbin通道，这里就会产生一个问题：若该cell处没有特征点，此时经过softmax后，每个通道上的响应就会出现受到噪声干扰造成异常随机，在随后的特征点选择一步中会将非特征点判定为特征。</p>
+<p>在添加Dustbin之后，在没有特征的情况下，只有在Dustbin通道的响应值很大，在后续的特征点判断阶段，此时该图像块的响应都很小，会成功判定为无特征点。</p>
+</blockquote>
+<h2 id="descriptor-decoder">Descriptor Decoder</h2>
+<p>这个部分的输出为<span class="math inline">\(H_c\times W_c \times D\)</span>，输出为<span class="math inline">\(H \times W \times D\)</span>，作者在这个部分使用了类似UCN（Universal Correspondence Network）的模型来获得一个半稠密（semi-dense）的描述子，与直接学习一个稠密的描述子，这个方法可以降低训练内存开销和运行时时间。之后作者使用了双三次多项式插值（代码中用了双线性插值）和L2归一化来得到最终结果。</p>
+<ul>
+<li><p>那么怎么通过给定特征点找到对应的描述子呢？</p>
+<p>这里先贴出作者源代码，来自SuperGlue中的SuperPoint部分<a href="#ref2">[2]</a>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">sample_descriptors</span>(<span class="params">keypoints, descriptors, s: <span class="built_in">int</span> = <span class="number">8</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot; Interpolate descriptors at keypoint locations &quot;&quot;&quot;</span></span><br><span class="line">    b, c, h, w = descriptors.shape</span><br><span class="line">    keypoints = keypoints - s / <span class="number">2</span> + <span class="number">0.5</span></span><br><span class="line">    keypoints /= torch.tensor([(w*s - s/<span class="number">2</span> - <span class="number">0.5</span>), (h*s - s/<span class="number">2</span> - <span class="number">0.5</span>)],</span><br><span class="line">                              ).to(keypoints)[<span class="literal">None</span>]</span><br><span class="line">    keypoints = keypoints*<span class="number">2</span> - <span class="number">1</span>  <span class="comment"># normalize to (-1, 1)</span></span><br><span class="line">    args = &#123;<span class="string">&#x27;align_corners&#x27;</span>: <span class="literal">True</span>&#125; <span class="keyword">if</span> torch.__version__ &gt;= <span class="string">&#x27;1.3&#x27;</span> <span class="keyword">else</span> &#123;&#125;</span><br><span class="line">    descriptors = torch.nn.functional.grid_sample(</span><br><span class="line">        descriptors, keypoints.view(b, <span class="number">1</span>, -<span class="number">1</span>, <span class="number">2</span>), mode=<span class="string">&#x27;bilinear&#x27;</span>, **args)</span><br><span class="line">    descriptors = torch.nn.functional.normalize(</span><br><span class="line">        descriptors.reshape(b, c, -<span class="number">1</span>), p=<span class="number">2</span>, dim=<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">return</span> descriptors</span><br></pre></td></tr></table></figure>
+<ol type="1">
+<li>首先输入的是对应图片的所有特征点和该图片的描述子。将图片及特征点位置归一化到<span class="math inline">\((-1,1)\)</span>，也就是<span class="math inline">\((-1,-1)\)</span>表示原图片<span class="math inline">\((0,0)\)</span>，而<span class="math inline">\((1,1)\)</span>表示<span class="math inline">\((H-1,W-1)\)</span>。</li>
+<li>作者在这里借助了<em>TORCH.NN.FUNCTIONAL.GRID_SAMPLE</em>这个函数。首先构建了一个<span class="math inline">\(1\times1\times K \times2\)</span>的张量，其中<span class="math inline">\(K\)</span>代表特征点个数，而最后一个维度保存了特征点的位置坐标。</li>
+<li>通过上述函数从描述子中提取这<span class="math inline">\(K\)</span>个特征点的特征描述，构成维度为<span class="math inline">\(1\times C\times1\times K\)</span>的张量。</li>
+</ol></li>
+</ul>
+<h1 id="training">Training</h1>
+<h2 id="loss-function">Loss Function</h2>
+<p>首先是误差函数，误差函数由两个部分构成：特征点损失函数<span class="math inline">\(\mathcal{L_p}\)</span>和描述子损失函数<span class="math inline">\(\mathcal{L_d}\)</span>。</p>
+<figure>
+<img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827212332521.png" alt="image-20220827212332521" /><figcaption>image-20220827212332521</figcaption>
+</figure>
+<p>其中特征点损失函数被定义成：</p>
+<figure>
+<img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827212438312.png" alt="image-20220827212438312" /><figcaption>image-20220827212438312</figcaption>
+</figure>
+<p>根据给定ground truth，对应cell中的元素<span class="math inline">\(\mathbf{x}_{hwy}\)</span>相对其他元素而言应该具有较大值（较大概率成为特征点（Interest Point），<span class="math inline">\(\log\)</span>损失函数基于这个原因构建。</p>
+<p>描述子损失函数被定义成：</p>
+<figure>
+<img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827213737954.png" alt="image-20220827213737954" /><figcaption>image-20220827213737954</figcaption>
+</figure>
+<p>其中<span class="math inline">\(l_d\)</span>是Hinge Loss加上positive margin <span class="math inline">\(m_p\)</span> 和 negative margin <span class="math inline">\(m_n\)</span>。<span class="math inline">\(\mathbf{d}\)</span>是对应的描述子。</p>
+<p><span class="math inline">\(S\)</span>是所有正确匹配的集合，每个元素如下：</p>
+<figure>
+<img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827214245803.png" alt="image-20220827214245803" /><figcaption>image-20220827214245803</figcaption>
+</figure>
+<p>其中<span class="math inline">\(\mathbf{p}\)</span>是cell的中心点。</p>
+<h2 id="base-detector">Base Detector</h2>
+<p>作者首先渲染了大量简单图形（物体），如线段，三角形等。用这些人造的数据集训练神经网络提取关键点Magic Point。</p>
+<figure>
+<img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827220345519.png" alt="image-20220827220345519" /><figcaption>image-20220827220345519</figcaption>
+</figure>
+<h2 id="homographic-adaptation">Homographic Adaptation</h2>
+<p>在人造的数据集上，Base Detector的性能非常的优秀，但是在真实数据集上性能不足。作者提出了Homographic Adaptation作为解决方案。</p>
+<p>作者首先对真实数据集进行多次单应变换，这里的单应变换为随机生成。网络检测变换后的图片生成关键点，将不同单应变换生成的结果聚合得到最后的detector：</p>
+<figure>
+<img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827221521818.png" alt="image-20220827221521818" /><figcaption>image-20220827221521818</figcaption>
+</figure>
+<ul>
+<li><p>作者在这里使用了Iterative Homographic Adaptation，也就是将一次训练好的检测器再次用同样的方法进行训练，得到再次更新的更加优秀的检测器。</p>
+<figure>
+<img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827222739947.png" alt="image-20220827222739947" /><figcaption>image-20220827222739947</figcaption>
+</figure></li>
+</ul>
+<h2 id="joint-training">Joint Training</h2>
+<p>将数据集中的图片进行随机单应变换<span class="math inline">\(\mathcal{H}\)</span>，将原始图片和变换后的图片送入SuperPoint网络中，使用已知的<span class="math inline">\(\mathcal{H}\)</span>计算损失函数，训练网络。</p>
+<p>作者提到在这里的<span class="math inline">\(\mathcal{H}\)</span>比Homographic Adaptation中的更加严格。原因是：</p>
+<blockquote>
+<p>we avoid sampling extreme in-plane rotations as they are rarely seen in HPatches.</p>
+</blockquote>
+<figure>
+<img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827222852485.png" alt="image-20220827222852485" /><figcaption>image-20220827222852485</figcaption>
+</figure>
+<h1 id="experiment">Experiment</h1>
+<p>这部分直接贴结果了。</p>
+<figure>
+<img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827222814976.png" alt="image-20220827222814976" /><figcaption>image-20220827222814976</figcaption>
+</figure>
+<figure>
+<img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827222826591.png" alt="image-20220827222826591" /><figcaption>image-20220827222826591</figcaption>
+</figure>
 <h1 id="reference">reference</h1>
-<p>todo</p>
+<ol type="1">
+<li>DeTone, Daniel, Tomasz Malisiewicz, and Andrew Rabinovich. "Superpoint: Self-supervised interest point detection and description." Proceedings of the IEEE conference on computer vision and pattern recognition workshops. 2018.</li>
+<li>https://github.com/magicleap/SuperGluePretrainedNetwork<a name="ref2"></a></li>
+<li>https://zhuanlan.zhihu.com/p/493508830.<a name="ref3"></a></li>
+</ol>
 
     </div>
 

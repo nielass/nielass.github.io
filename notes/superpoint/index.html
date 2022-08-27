@@ -298,7 +298,7 @@
 <li>Descriptor Decoder</li>
 </ol>
 <figure>
-<img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827212508325.png" alt="image-20220827212508325" /><figcaption>image-20220827212508325</figcaption>
+<img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827212508325.png" alt="Architecture" /><figcaption>Architecture</figcaption>
 </figure>
 <h2 id="shared-encoder">Shared Encoder</h2>
 <p>这部分是两个Decoder分享的网络部分。在分享的编码网络中，作者使用了VGG-Style的Encoder来降低输入图像的尺寸，各层包括了卷积层，三个pooling层和激活函数层。三个pooling层可以把尺寸为<span class="math inline">\(H \times W\)</span> 的图像变成<span class="math inline">\(H_c = H / 8， W_c = W / 8\)</span>。最终会生成一个空间维度较小，但是通道数较多的中间结果<span class="math inline">\(\mathcal{B}\in\mathbb{R}^{H_c\times W_c \times F}\)</span>。作者把所生成的结果中每一个位置称为cell。</p>
@@ -329,38 +329,28 @@
 <h2 id="loss-function">Loss Function</h2>
 <p>首先是误差函数，误差函数由两个部分构成：特征点损失函数<span class="math inline">\(\mathcal{L_p}\)</span>和描述子损失函数<span class="math inline">\(\mathcal{L_d}\)</span>。</p>
 <figure>
-<img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827212332521.png" alt="image-20220827212332521" /><figcaption>image-20220827212332521</figcaption>
+<img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827212332521.png" alt="Loss Function" /><figcaption>Loss Function</figcaption>
 </figure>
 <p>其中特征点损失函数被定义成：</p>
-<figure>
-<img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827212438312.png" alt="image-20220827212438312" /><figcaption>image-20220827212438312</figcaption>
-</figure>
+<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827212438312.png" /></p>
 <p>根据给定ground truth，对应cell中的元素<span class="math inline">\(\mathbf{x}_{hwy}\)</span>相对其他元素而言应该具有较大值（较大概率成为特征点（Interest Point），<span class="math inline">\(\log\)</span>损失函数基于这个原因构建。</p>
 <p>描述子损失函数被定义成：</p>
-<figure>
-<img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827213737954.png" alt="image-20220827213737954" /><figcaption>image-20220827213737954</figcaption>
-</figure>
+<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827213737954.png" /></p>
 <p>其中<span class="math inline">\(l_d\)</span>是Hinge Loss加上positive margin <span class="math inline">\(m_p\)</span> 和 negative margin <span class="math inline">\(m_n\)</span>。<span class="math inline">\(\mathbf{d}\)</span>是对应的描述子。</p>
 <p><span class="math inline">\(S\)</span>是所有正确匹配的集合，每个元素如下：</p>
-<figure>
-<img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827214245803.png" alt="image-20220827214245803" /><figcaption>image-20220827214245803</figcaption>
-</figure>
+<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827214245803.png" /></p>
 <p>其中<span class="math inline">\(\mathbf{p}\)</span>是cell的中心点。</p>
 <h2 id="base-detector">Base Detector</h2>
 <p>作者首先渲染了大量简单图形（物体），如线段，三角形等。用这些人造的数据集训练神经网络提取关键点Magic Point。</p>
-<figure>
-<img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827220345519.png" alt="image-20220827220345519" /><figcaption>image-20220827220345519</figcaption>
-</figure>
+<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827220345519.png" /></p>
 <h2 id="homographic-adaptation">Homographic Adaptation</h2>
 <p>在人造的数据集上，Base Detector的性能非常的优秀，但是在真实数据集上性能不足。作者提出了Homographic Adaptation作为解决方案。</p>
 <p>作者首先对真实数据集进行多次单应变换，这里的单应变换为随机生成。网络检测变换后的图片生成关键点，将不同单应变换生成的结果聚合得到最后的detector：</p>
-<figure>
-<img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827221521818.png" alt="image-20220827221521818" /><figcaption>image-20220827221521818</figcaption>
-</figure>
+<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827221521818.png" /></p>
 <ul>
 <li><p>作者在这里使用了Iterative Homographic Adaptation，也就是将一次训练好的检测器再次用同样的方法进行训练，得到再次更新的更加优秀的检测器。</p>
 <figure>
-<img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827222739947.png" alt="image-20220827222739947" /><figcaption>image-20220827222739947</figcaption>
+<img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827222739947.png" alt="Iterative Homographic Adaptation" /><figcaption>Iterative Homographic Adaptation</figcaption>
 </figure></li>
 </ul>
 <h2 id="joint-training">Joint Training</h2>
@@ -369,9 +359,7 @@
 <blockquote>
 <p>we avoid sampling extreme in-plane rotations as they are rarely seen in HPatches.</p>
 </blockquote>
-<figure>
-<img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827222852485.png" alt="image-20220827222852485" /><figcaption>image-20220827222852485</figcaption>
-</figure>
+<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827222852485.png" /></p>
 <h1 id="experiment">Experiment</h1>
 <p>这部分直接贴结果了。</p>
 <figure>

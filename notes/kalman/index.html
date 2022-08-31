@@ -30,6 +30,7 @@
 <meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220830215458510.png">
 <meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220831091737582.png">
 <meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220831094206834.png">
+<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220831105107796.png">
 <meta property="article:published_time" content="2022-08-30T19:15:40.000Z">
 <meta property="article:modified_time" content="2022-08-30T22:00:00.000Z">
 <meta property="article:author" content="Nielass">
@@ -123,7 +124,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E6%9C%AF%E8%AF%ADterms"><span class="nav-number">1.</span> <span class="nav-text">关键术语（Terms)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B4%9D%E5%8F%B6%E6%96%AF%E6%BB%A4%E6%B3%A2bayes-filter"><span class="nav-number">2.</span> <span class="nav-text">贝叶斯滤波（Bayes Filter）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%A1%E5%B0%94%E6%9B%BC%E6%BB%A4%E6%B3%A2%E5%99%A8kalman-filter"><span class="nav-number">3.</span> <span class="nav-text">卡尔曼滤波器（Kalman Filter）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%81%87%E8%AE%BE"><span class="nav-number">3.1.</span> <span class="nav-text">假设</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%97%E6%B3%95"><span class="nav-number">3.2.</span> <span class="nav-text">算法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%89%A9%E5%B1%95%E5%8D%A1%E5%B0%94%E6%9B%BC%E6%BB%A4%E6%B3%A2extended-kalman-filter"><span class="nav-number">4.</span> <span class="nav-text">扩展卡尔曼滤波（Extended Kalman Filter）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%A0%E8%BF%B9%E5%8D%A1%E5%B0%94%E6%9B%BC%E6%BB%A4%E6%B3%A2unscented-kalman-filter"><span class="nav-number">5.</span> <span class="nav-text">无迹卡尔曼滤波（Unscented Kalman Filter）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#reference"><span class="nav-number">6.</span> <span class="nav-text">reference</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E6%9C%AF%E8%AF%ADterms"><span class="nav-number">1.</span> <span class="nav-text">关键术语（Terms)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B4%9D%E5%8F%B6%E6%96%AF%E6%BB%A4%E6%B3%A2bayes-filter"><span class="nav-number">2.</span> <span class="nav-text">贝叶斯滤波（Bayes Filter）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%A1%E5%B0%94%E6%9B%BC%E6%BB%A4%E6%B3%A2%E5%99%A8kalman-filter"><span class="nav-number">3.</span> <span class="nav-text">卡尔曼滤波器（Kalman Filter）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%81%87%E8%AE%BE"><span class="nav-number">3.1.</span> <span class="nav-text">假设</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%97%E6%B3%95"><span class="nav-number">3.2.</span> <span class="nav-text">算法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%89%A9%E5%B1%95%E5%8D%A1%E5%B0%94%E6%9B%BC%E6%BB%A4%E6%B3%A2extended-kalman-filter"><span class="nav-number">4.</span> <span class="nav-text">扩展卡尔曼滤波（Extended Kalman Filter）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%81%87%E8%AE%BE-1"><span class="nav-number">4.1.</span> <span class="nav-text">假设</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E6%80%A7%E5%8C%96%E6%B3%B0%E5%8B%92%E5%B1%95%E5%BC%80"><span class="nav-number">4.2.</span> <span class="nav-text">线性化（泰勒展开）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%97%E6%B3%95-1"><span class="nav-number">4.3.</span> <span class="nav-text">算法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%A0%E8%BF%B9%E5%8D%A1%E5%B0%94%E6%9B%BC%E6%BB%A4%E6%B3%A2unscented-kalman-filter"><span class="nav-number">5.</span> <span class="nav-text">无迹卡尔曼滤波（Unscented Kalman Filter）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#reference"><span class="nav-number">6.</span> <span class="nav-text">reference</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -268,13 +269,13 @@
 x_t = A_t x_{t-1}+B_t u_t + \epsilon_t
 \]</span> <span class="math inline">\(x\)</span>是一个维度为<span class="math inline">\(n\)</span>的状态向量，<span class="math inline">\(u\)</span>是一个维度为<span class="math inline">\(m\)</span>的状态向量。这里的<span class="math inline">\(A_t\)</span>是一个<span class="math inline">\(n \times n\)</span>的矩阵，而<span class="math inline">\(B_t\)</span>是一个<span class="math inline">\(m \times n\)</span>的矩阵。</p>
 <p>随机变量<span class="math inline">\(\epsilon_t\)</span>服从高斯分布<span class="math inline">\(\mathcal{N}(0, R_t)\)</span>。那么可得： <span class="math display">\[
-p(x_t|x_{t-1}, u_t) \sim \mathcal{N}(A_t x_{t-1}+B_t u_t, R_t)
+p(x_t|x_{t-1}, u_t) = \mathcal{N}(A_t x_{t-1}+B_t u_t, R_t)
 \]</span></p></li>
 <li><p>观测概率<span class="math inline">\(p(z_t|x_t)\)</span>也必须是一个线性函数加上高斯噪声。即： <span class="math display">\[
 z_t = C_tx_t + \delta_t
 \]</span> <span class="math inline">\(z_t\)</span>是维度为<span class="math inline">\(k\)</span>的观测向量，<span class="math inline">\(C_t\)</span>是维度为<span class="math inline">\(k\times n\)</span>的矩阵。</p>
 <p>随机变量<span class="math inline">\(\delta_t\)</span>服从高斯分布<span class="math inline">\(\mathcal{N}(0, Q_t)\)</span>。同理可得： <span class="math display">\[
-p(z_t|x_t) \sim \mathcal{N}(C_tx_t, Q_t)
+p(z_t|x_t) = \mathcal{N}(C_tx_t, Q_t)
 \]</span></p></li>
 <li><p>初始状态认知分布<span class="math inline">\(bel(x_0)\)</span>必须是一个高斯分布<span class="math inline">\(\mathcal{N}(\mu_0, \Sigma_0)\)</span>。</p></li>
 </ol>
@@ -285,11 +286,49 @@ p(z_t|x_t) \sim \mathcal{N}(C_tx_t, Q_t)
 <p>算法步骤基本上与贝叶斯滤波一致。在上图Line 2和3中，首先通过假设1与<span class="math inline">\(u_t\)</span>计算预测值<span class="math inline">\(\overline {bel}(x_t)\)</span>，即对应的<span class="math inline">\(\overline \mu_{t}\)</span>和<span class="math inline">\(\overline\Sigma_{t}\)</span>。</p>
 <p>之后为了做观测更新，算法需要计算卡尔曼增益（Kalman gain），即图中的<span class="math inline">\(K_t\)</span>。这个量描述了观测结果被纳入新的估计值的程度。Line 5中使用<span class="math inline">\(K_t\)</span>和实际观测值<span class="math inline">\(z_t\)</span>与预计观测值<span class="math inline">\(C_t\)</span>之间的差值来更新<span class="math inline">\(\mu_t\)</span>，Line 6同理更新协方差矩阵。</p>
 <p>以上所题假设和算法的数学推导见<a href="#ref1">[1]</a>的3.2.4</p>
-<p>卡尔曼滤波的主要计算复杂度来源于Line 4的逆矩阵计算。对于一个<span class="math inline">\(n\times n\)</span>的矩阵而言，求逆复杂度大约是<span class="math inline">\(O(n^{2.4})\)</span>，对于上述算法，这个复杂度是<span class="math inline">\(O(k^{2.4})\)</span>。</p>
+<p>卡尔曼滤波的主要计算复杂度来源于Line 4的逆矩阵计算。对于一个<span class="math inline">\(n\times n\)</span>的矩阵而言，求逆复杂度大约是<span class="math inline">\(O(n^{2.4})\)</span>，对于上述算法，这个复杂度是<span class="math inline">\(O(k^{2.4})\)</span>。除此之外，算法中包含的矩阵乘法也会带来<span class="math inline">\(O(n^2)\)</span>的复杂度，这里的<span class="math inline">\(n\)</span>是状态的维度。</p>
 <p>下面给一个简单的例子来简单展示整个更新的过程</p>
 <p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220831094206834.png" /></p>
 <h1 id="扩展卡尔曼滤波extended-kalman-filter">扩展卡尔曼滤波（Extended Kalman Filter）</h1>
-<p>todo</p>
+<p>在卡尔曼滤波中，我们对状态和观测做出了线性假设。但是绝大多数实际应用中，状态和观测的变化都不是线性关系，因此我们需要扩展卡尔曼滤波来解决这个问题。</p>
+<h2 id="假设-1">假设</h2>
+<p>在扩展卡尔曼滤波（EKF）中，状态转移概率和观测概率不再是一个线性函数，即： <span class="math display">\[
+x_t = g(u_t, x_{t-1}) + \epsilon_t \\
+z_t = h(x_t) + \delta_t
+\]</span> 与前面一致，随机变量<span class="math inline">\(\epsilon_t\)</span>和<span class="math inline">\(\delta_t\)</span>分别服从高斯分布<span class="math inline">\(\mathcal{N}(0, R_t)\)</span>和<span class="math inline">\(\mathcal{N}(0, Q_t)\)</span>。这里的<span class="math inline">\(g\)</span>和<span class="math inline">\(h\)</span>都不是线性函数，对于任意的<span class="math inline">\(g\)</span>和<span class="math inline">\(h\)</span>，<span class="math inline">\(bel(x_t)\)</span>不再是一个高斯分布。因此EKF计算一个高斯分布来估计<span class="math inline">\(bel(x_t)\)</span>的真实值。</p>
+<h2 id="线性化泰勒展开">线性化（泰勒展开）</h2>
+<p>要计算一个高斯分布就需要计算它的均值和协方差矩阵，从上述假设中我们可以发现，要计算均值，我们需要<span class="math inline">\(g(u_t, x_{t-1})\)</span>的值。因为我们无法直接计算<span class="math inline">\(g(u_t, x_{t-1})\)</span>的值，我们需要估计它，这里利用一阶泰勒展开来线性化<span class="math inline">\(g\)</span>。</p>
+<p>线性化的优点在于高效。相比于蒙特卡洛法来估计<span class="math inline">\(bel(x_t)\)</span>时需要的大量采样而言，线性化可以更加快速的计算结果。</p>
+<p>无论是直接计算<span class="math inline">\(g(u_t, x_{t-1})\)</span>还是计算它的偏导，我们都需要一个<span class="math inline">\(x_{t-1}\)</span>的值。作者在这里选择了<span class="math inline">\(x_{t-1}\)</span>的均值<span class="math inline">\(\mu_{t-1}\)</span>作为线性化的点，因为这是可能性最大的值。最终线性化结果为： <span class="math display">\[
+\begin{align}
+g(u_t, x_{t-1}) &amp;\approx g(u_t, \mu_{t-1})+g^\prime(u_t, x_{t-1})(x_{t-1} - \mu_{t-1})
+\\
+&amp;= g(u_t, \mu_{t-1})+G_t(x_{t-1} - \mu_{t-1}) \\
+G_t &amp;= \frac{\partial g(u_t, x_{t-1})}{\partial x_{t-1}}
+\end{align}
+\]</span> 这里的<span class="math inline">\(G_t\)</span>和下文的<span class="math inline">\(H_t\)</span>还被称作雅各比（Jacobian）。</p>
+<p>有了<span class="math inline">\(g(u_t, x_{t-1})\)</span>的值，我们就可以写出<span class="math inline">\(p(x_t|x_{t-1}, u_t)\)</span>的估计值： <span class="math display">\[
+p(x_t|x_{t-1}, u_t) \approx \mathcal{N}(g(u_t, \mu_{t-1})+G_t(x_{t-1} - \mu_{t-1}), R_t)
+\]</span> 写法基本与卡尔曼滤波一样，只是这里只是对真实分布的估计而已。</p>
+<p>对于观测概率，EKF采用了完全一样的方法。因此可得： <span class="math display">\[
+\begin{align}
+h(x_t) &amp;\approx h(\bar\mu_t) + h^\prime(\bar\mu_t)(x_t - \bar\mu_t) \\
+&amp;= h(\bar\mu_t) + H_t(x_t - \bar\mu_t) \\
+H_t &amp;= \frac{\partial h(x_t)}{\partial x_{t}}
+\end{align}
+\]</span> 这里的<span class="math inline">\(\bar\mu_t\)</span>可以由上面所求得的<span class="math inline">\(p(x_t|x_{t-1}, u_t)\)</span>中得到。因此： <span class="math display">\[
+p(z_t|x_t) = \mathcal{N}(h(\bar\mu_t) + H_t(x_t - \bar\mu_t), Q_t)
+\]</span></p>
+<h2 id="算法-1">算法</h2>
+<p>整体的算法如图所示：</p>
+<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220831105107796.png" /></p>
+<p>与卡尔曼滤波的差别在于，此时的<span class="math inline">\(\mu_t\)</span>和<span class="math inline">\(\Sigma_t\)</span>描述的高斯分布只是对真实分布的估计。</p>
+<p>以上所题假设和算法的数学推导见<a href="#ref1">[1]</a>的3.3.4</p>
+<p>在实际应用中，EKF和KF一样具有<span class="math inline">\(O(k^{2.4} + n^2)\)</span>的复杂度。除此之外，以下两点也需要被注意</p>
+<ol type="1">
+<li>高不确定性的先验概率会让后验概率的准确性较低。</li>
+<li>非线性程度较高会使得估计误差增大。</li>
+</ol>
 <h1 id="无迹卡尔曼滤波unscented-kalman-filter">无迹卡尔曼滤波（Unscented Kalman Filter）</h1>
 <p>todo</p>
 <h1 id="reference">reference</h1>

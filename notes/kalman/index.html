@@ -362,22 +362,28 @@ p(z_t|x_t) = \mathcal{N}(h(\bar\mu_t) + H_t(x_t - \bar\mu_t), Q_t)
 <p>并且，在上文EKF的介绍中，可以发现实际应用中EKF对模型非线性和先验不确定性有要求，在本章节介绍中，我们可以发现UKF在同样条件下拥有更好的性能。</p>
 <h2 id="线性化unscented-transform">线性化（unscented transform）</h2>
 <p>在这个方法中，首先需要引入的概念是西格玛点（sigma point）。</p>
-<p>对于一个<span class="math inline">\(n\)</span>维高斯分布<span class="math inline">\(\mathcal{N}(\mu, \Sigma)\)</span>，西格玛点的选取方式是，首先选取均值点<span class="math inline">\(\mu\)</span>作为第一个点，沿着协方差矩阵主轴方向（along the main axes of covariance）关于均值对称选取两个点，一共选取<span class="math inline">\(2n+1\)</span>个点，选取方法如下： <span class="math display">\[
+<p>对于一个<span class="math inline">\(n\)</span>维高斯分布<span class="math inline">\(\mathcal{N}(\mu, \Sigma)\)</span>，西格玛点的选取方式是，首先选取均值点<span class="math inline">\(\mu\)</span>作为第一个点，沿着协方差矩阵主轴方向（along the main axes of covariance）关于均值对称选取两个点，一共选取<span class="math inline">\(2n+1\)</span>个点，选取方法如下：</p>
+<p><span class="math display">\[
 \begin{align}
 \mathcal{X}^{[0]} &amp;= \mu \\
 \mathcal{X}^{[i]} &amp;= \mu + \bigg(\sqrt{(n + \lambda)\Sigma}\bigg)_i \ \ \ \text{for i = 1,2,.., n} \\
 \mathcal{X}^{[i]} &amp;= \mu - \bigg(\sqrt{(n + \lambda)\Sigma}\bigg)_{i-n} \ \ \ \text{for i = n + 1,...,2n} \\
 \end{align}
-\]</span> 这里的<span class="math inline">\(\lambda=\alpha^2(n+\kappa)-n\)</span>，其中<span class="math inline">\(\alpha\)</span>和<span class="math inline">\(\kappa\)</span>决定了西格玛点与均值点的距离。</p>
-<p>每一个西格玛点还有两个权重值，<span class="math inline">\(w_m^{[i]}\)</span>用于计算均值，<span class="math inline">\(w_c^{[i]}\)</span>用于恢复高斯的协方差矩阵，具体计算方式如下： $$ <span class="math display">\[\begin{align}
+\]</span></p>
+<p>这里的<span class="math inline">\(\lambda=\alpha^2(n+\kappa)-n\)</span>，其中<span class="math inline">\(\alpha\)</span>和<span class="math inline">\(\kappa\)</span>决定了西格玛点与均值点的距离。</p>
+<p>每一个西格玛点还有两个权重值，<span class="math inline">\(w_m^{[i]}\)</span>用于计算均值，<span class="math inline">\(w_c^{[i]}\)</span>用于恢复高斯的协方差矩阵，具体计算方式如下：</p>
+<p><span class="math display">\[
+\begin{align}
 w_m^{[0]} &amp;= \frac{\lambda}{n+\lambda} \\
 w_c^{[0]} &amp;= \frac{\lambda}{n+\lambda}+(1-\alpha^2+\beta) \\
 w_m^{[i]} &amp;= w_c^{[i]} = \frac{1}{2(n+\lambda)} \ \ \ \text{for i = 1,2,.., 2n} \\
-
-\end{align}\]</span> $$ 这里的<span class="math inline">\(\beta\)</span>用于编码（encode）关于实际分布的额外的信息。如果实际分布是高斯分布，最优选择为<span class="math inline">\(\beta =2\)</span>。</p>
+\end{align}
+\]</span></p>
+<p>这里的<span class="math inline">\(\beta\)</span>用于编码（encode）关于实际分布的额外的信息。如果实际分布是高斯分布，最优选择为<span class="math inline">\(\beta =2\)</span>。</p>
 <p>选取的西格玛点被代入非线性函数<span class="math inline">\(g\)</span>中，即： <span class="math display">\[
 \mathcal{Y}^{[i]} = g(\mathcal{X}^{[i]})
-\]</span> 接下来，通过以下公式，我们可以提取所需的高斯分布： $$ <span class="math display">\[\begin{align}
+\]</span> 接下来，通过以下公式，我们可以提取所需的高斯分布：</p>
+<p>$$ <span class="math display">\[\begin{align}
 
 \mu^\prime &amp;= \displaystyle\sum_{i=0}^{2n}  w_m^{[i]}\mathcal{Y}^{[i]}
 \\

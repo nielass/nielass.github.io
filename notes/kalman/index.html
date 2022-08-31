@@ -380,18 +380,19 @@ w_m^{[i]} &amp;= w_c^{[i]} = \frac{1}{2(n+\lambda)} \ \ \ \text{for i = 1,2,.., 
 \end{align}
 \]</span></p>
 <p>这里的<span class="math inline">\(\beta\)</span>用于编码（encode）关于实际分布的额外的信息。如果实际分布是高斯分布，最优选择为<span class="math inline">\(\beta =2\)</span>。</p>
-<p>选取的西格玛点被代入非线性函数<span class="math inline">\(g\)</span>中，即： <span class="math display">\[
+<p>选取的西格玛点被代入非线性函数<span class="math inline">\(g\)</span>中，即：</p>
+<p><span class="math display">\[
 \mathcal{Y}^{[i]} = g(\mathcal{X}^{[i]})
-\]</span> 接下来，通过以下公式，我们可以提取所需的高斯分布：</p>
-<p>$$ <span class="math display">\[\begin{align}
-
+\]</span></p>
+<p>接下来，通过以下公式，我们可以提取所需的高斯分布：</p>
+<p><span class="math display">\[
+\begin{align}
 \mu^\prime &amp;= \displaystyle\sum_{i=0}^{2n}  w_m^{[i]}\mathcal{Y}^{[i]}
 \\
-
 \Sigma^\prime &amp;= \displaystyle\sum_{i=0}^{2n}  w_c^{[i]} \bigg(\mathcal{Y}^{[i]}-\mu^\prime\bigg) \bigg(\mathcal{Y}^{[i]}-\mu^\prime\bigg)^T
 \\
-
-\end{align}\]</span> $$</p>
+\end{align}
+\]</span></p>
 <h2 id="算法-2">算法</h2>
 <p>整体的算法如图所示：</p>
 <p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220831150455583.png" /></p>

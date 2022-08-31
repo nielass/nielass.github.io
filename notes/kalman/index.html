@@ -265,13 +265,13 @@
 <h2 id="假设">假设</h2>
 <p>实现卡尔曼滤波需要对状态和观测进行一些假设，当以下假设全被满足的时候，可以保证任意时刻<span class="math inline">\(t\)</span>的<span class="math inline">\(bel(x_t)\)</span>都为高斯分布。</p>
 <ol type="1">
-<li><p>状态转移概率<span class="math inline">\(p(x_t|x_{t-1}, u_t)\)</span>必须是一个线性函数加上高斯噪声。即： <span class="math display">\[
+<li><p>状态转移概率<span class="math inline">\(p(x_t|x_{t-1}, u_t)\)</span>对其参数必须是一个线性函数加上高斯噪声。即： <span class="math display">\[
 x_t = A_t x_{t-1}+B_t u_t + \epsilon_t
 \]</span> <span class="math inline">\(x\)</span>是一个维度为<span class="math inline">\(n\)</span>的状态向量，<span class="math inline">\(u\)</span>是一个维度为<span class="math inline">\(m\)</span>的状态向量。这里的<span class="math inline">\(A_t\)</span>是一个<span class="math inline">\(n \times n\)</span>的矩阵，而<span class="math inline">\(B_t\)</span>是一个<span class="math inline">\(m \times n\)</span>的矩阵。</p>
 <p>随机变量<span class="math inline">\(\epsilon_t\)</span>服从高斯分布<span class="math inline">\(\mathcal{N}(0, R_t)\)</span>。那么可得： <span class="math display">\[
 p(x_t|x_{t-1}, u_t) = \mathcal{N}(A_t x_{t-1}+B_t u_t, R_t)
 \]</span></p></li>
-<li><p>观测概率<span class="math inline">\(p(z_t|x_t)\)</span>也必须是一个线性函数加上高斯噪声。即： <span class="math display">\[
+<li><p>观测概率<span class="math inline">\(p(z_t|x_t)\)</span>对其参数也必须是一个线性函数加上高斯噪声。即： <span class="math display">\[
 z_t = C_tx_t + \delta_t
 \]</span> <span class="math inline">\(z_t\)</span>是维度为<span class="math inline">\(k\)</span>的观测向量，<span class="math inline">\(C_t\)</span>是维度为<span class="math inline">\(k\times n\)</span>的矩阵。</p>
 <p>随机变量<span class="math inline">\(\delta_t\)</span>服从高斯分布<span class="math inline">\(\mathcal{N}(0, Q_t)\)</span>。同理可得： <span class="math display">\[
@@ -292,7 +292,7 @@ p(z_t|x_t) = \mathcal{N}(C_tx_t, Q_t)
 <h1 id="扩展卡尔曼滤波extended-kalman-filter">扩展卡尔曼滤波（Extended Kalman Filter）</h1>
 <p>在卡尔曼滤波中，我们对状态和观测做出了线性假设。但是绝大多数实际应用中，状态和观测的变化都不是线性关系，因此我们需要扩展卡尔曼滤波来解决这个问题。</p>
 <h2 id="假设-1">假设</h2>
-<p>在扩展卡尔曼滤波（EKF）中，状态转移概率和观测概率不再是一个线性函数，即： <span class="math display">\[
+<p>在扩展卡尔曼滤波（EKF）中，状态转移概率和观测概率对其参数不再是一个线性函数，即： <span class="math display">\[
 x_t = g(u_t, x_{t-1}) + \epsilon_t \\
 z_t = h(x_t) + \delta_t
 \]</span> 与前面一致，随机变量<span class="math inline">\(\epsilon_t\)</span>和<span class="math inline">\(\delta_t\)</span>分别服从高斯分布<span class="math inline">\(\mathcal{N}(0, R_t)\)</span>和<span class="math inline">\(\mathcal{N}(0, Q_t)\)</span>。这里的<span class="math inline">\(g\)</span>和<span class="math inline">\(h\)</span>都不是线性函数，对于任意的<span class="math inline">\(g\)</span>和<span class="math inline">\(h\)</span>，<span class="math inline">\(bel(x_t)\)</span>不再是一个高斯分布。因此EKF计算一个高斯分布来估计<span class="math inline">\(bel(x_t)\)</span>的真实值。</p>

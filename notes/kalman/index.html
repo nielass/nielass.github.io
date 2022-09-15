@@ -18,7 +18,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha256-xejo6yLi6vGtAjcMIsY8BHdKsLg7QynVlFMzdQgUuy8=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"nielass.xyz","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"nielass.xyz","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="这篇文章是我学习状态估计和卡尔曼滤波器的笔记，其中略去大量公式的推导过程，只留下核心的公式和算法。 博客中简单介绍了  贝叶斯滤波（Bayes Filter） 卡尔曼滤波（Kalman Filter） 扩展卡尔曼滤波（Extended Kalman Filter） 无迹卡尔曼滤波（Unscented Kalman Filter）">
 <meta property="og:type" content="article">
@@ -101,7 +101,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home Home fa-fw"></i>Home</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags Tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th Categories fa-fw"></i>Categories</a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home Home fa-fw"></i>Home</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags Tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th Categories fa-fw"></i>Categories</a></li><li class="menu-item menu-item-materials"><a href="/materials/" rel="section"><i class="fa fa-book Materials fa-fw"></i>Materials</a></li>
   </ul>
 </nav>
 
@@ -132,7 +132,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E6%9C%AF%E8%AF%ADterms"><span class="nav-number">1.</span> <span class="nav-text">关键术语（Terms)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B4%9D%E5%8F%B6%E6%96%AF%E6%BB%A4%E6%B3%A2bayes-filter"><span class="nav-number">2.</span> <span class="nav-text">贝叶斯滤波（Bayes Filter）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%A1%E5%B0%94%E6%9B%BC%E6%BB%A4%E6%B3%A2%E5%99%A8kalman-filter"><span class="nav-number">3.</span> <span class="nav-text">卡尔曼滤波器（Kalman Filter）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%81%87%E8%AE%BE"><span class="nav-number">3.1.</span> <span class="nav-text">假设</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%97%E6%B3%95"><span class="nav-number">3.2.</span> <span class="nav-text">算法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%89%A9%E5%B1%95%E5%8D%A1%E5%B0%94%E6%9B%BC%E6%BB%A4%E6%B3%A2extended-kalman-filter"><span class="nav-number">4.</span> <span class="nav-text">扩展卡尔曼滤波（Extended Kalman Filter）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%81%87%E8%AE%BE-1"><span class="nav-number">4.1.</span> <span class="nav-text">假设</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E6%80%A7%E5%8C%96%E6%B3%B0%E5%8B%92%E5%B1%95%E5%BC%80"><span class="nav-number">4.2.</span> <span class="nav-text">线性化（泰勒展开）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%97%E6%B3%95-1"><span class="nav-number">4.3.</span> <span class="nav-text">算法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%A0%E8%BF%B9%E5%8D%A1%E5%B0%94%E6%9B%BC%E6%BB%A4%E6%B3%A2unscented-kalman-filter"><span class="nav-number">5.</span> <span class="nav-text">无迹卡尔曼滤波（Unscented Kalman Filter）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E6%80%A7%E5%8C%96unscented-transform"><span class="nav-number">5.1.</span> <span class="nav-text">线性化（unscented transform）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%97%E6%B3%95-2"><span class="nav-number">5.2.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ukf%E5%92%8Cekf%E4%B9%8B%E9%97%B4%E7%9A%84%E5%AF%B9%E6%AF%94"><span class="nav-number">5.3.</span> <span class="nav-text">UKF和EKF之间的对比</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B2%92%E5%AD%90%E6%BB%A4%E6%B3%A2particle-filter"><span class="nav-number">6.</span> <span class="nav-text">粒子滤波（Particle Filter）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#reference"><span class="nav-number">7.</span> <span class="nav-text">reference</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E6%9C%AF%E8%AF%ADterms"><span class="nav-number">1.</span> <span class="nav-text">关键术语（Terms)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B4%9D%E5%8F%B6%E6%96%AF%E6%BB%A4%E6%B3%A2bayes-filter"><span class="nav-number">2.</span> <span class="nav-text">贝叶斯滤波（Bayes Filter）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%A1%E5%B0%94%E6%9B%BC%E6%BB%A4%E6%B3%A2%E5%99%A8kalman-filter"><span class="nav-number">3.</span> <span class="nav-text">卡尔曼滤波器（Kalman Filter）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%81%87%E8%AE%BE"><span class="nav-number">3.1.</span> <span class="nav-text">假设</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%97%E6%B3%95"><span class="nav-number">3.2.</span> <span class="nav-text">算法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%89%A9%E5%B1%95%E5%8D%A1%E5%B0%94%E6%9B%BC%E6%BB%A4%E6%B3%A2extended-kalman-filter"><span class="nav-number">4.</span> <span class="nav-text">扩展卡尔曼滤波（Extended Kalman Filter）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%81%87%E8%AE%BE-1"><span class="nav-number">4.1.</span> <span class="nav-text">假设</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E6%80%A7%E5%8C%96%E6%B3%B0%E5%8B%92%E5%B1%95%E5%BC%80"><span class="nav-number">4.2.</span> <span class="nav-text">线性化（泰勒展开）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%97%E6%B3%95-1"><span class="nav-number">4.3.</span> <span class="nav-text">算法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%A0%E8%BF%B9%E5%8D%A1%E5%B0%94%E6%9B%BC%E6%BB%A4%E6%B3%A2unscented-kalman-filter"><span class="nav-number">5.</span> <span class="nav-text">无迹卡尔曼滤波（Unscented Kalman Filter）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%A0%E8%BF%B9%E5%8F%98%E5%8C%96unscented-transform"><span class="nav-number">5.1.</span> <span class="nav-text">无迹变化（unscented transform）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%97%E6%B3%95-2"><span class="nav-number">5.2.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ukf%E5%92%8Cekf%E4%B9%8B%E9%97%B4%E7%9A%84%E5%AF%B9%E6%AF%94"><span class="nav-number">5.3.</span> <span class="nav-text">UKF和EKF之间的对比</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B2%92%E5%AD%90%E6%BB%A4%E6%B3%A2particle-filter"><span class="nav-number">6.</span> <span class="nav-text">粒子滤波（Particle Filter）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#reference"><span class="nav-number">7.</span> <span class="nav-text">Reference</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -145,18 +145,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-count">9</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">9</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-count">21</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -358,9 +358,9 @@ p(z_t|x_t) = \mathcal{N}(h(\bar\mu_t) + H_t(x_t - \bar\mu_t), Q_t)
 <img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220831145631423.png" alt="Dependence of the approximation quality on local nonlinearity of the function" /><figcaption>Dependence of the approximation quality on local nonlinearity of the function</figcaption>
 </figure>
 <h1 id="无迹卡尔曼滤波unscented-kalman-filter">无迹卡尔曼滤波（Unscented Kalman Filter）</h1>
-<p>在EKF中，我们使用了泰勒展开作为线性化的方法。而在UKF中，我们将使用一种不同的线性化的方法，叫做无迹变化（unscented transform）。</p>
+<p>在EKF中，我们处理非线性模型的方法是通过泰勒展开来线性化模型。而在UKF中，我们将使用一种不同的方法，叫做无迹变化（unscented transform）。</p>
 <p>并且，在上文EKF的介绍中，可以发现实际应用中EKF对模型非线性和先验不确定性有要求，在本章节介绍中，我们可以发现UKF在同样条件下拥有更好的性能。</p>
-<h2 id="线性化unscented-transform">线性化（unscented transform）</h2>
+<h2 id="无迹变化unscented-transform">无迹变化（unscented transform）</h2>
 <p>在这个方法中，首先需要引入的概念是西格玛点（sigma point）。</p>
 <p>对于一个<span class="math inline">\(n\)</span>维高斯分布<span class="math inline">\(\mathcal{N}(\mu, \Sigma)\)</span>，西格玛点的选取方式是，首先选取均值点<span class="math inline">\(\mu\)</span>作为第一个点，沿着协方差矩阵主轴方向（along the main axes of covariance）关于均值对称选取两个点，一共选取<span class="math inline">\(2n+1\)</span>个点，选取方法如下：</p>
 <p><span class="math display">\[
@@ -415,7 +415,7 @@ w_m^{[i]} &amp;= w_c^{[i]} = \frac{1}{2(n+\lambda)} \ \ \ \text{for i = 1,2,.., 
 </figure>
 <h1 id="粒子滤波particle-filter">粒子滤波（Particle Filter）</h1>
 <p>todo</p>
-<h1 id="reference">reference</h1>
+<h1 id="reference">Reference</h1>
 <ol type="1">
 <li>Thrun, S., Burgard, W., &amp; Fox, D. (2005). Probabilistic Robotics. MIT Press.<a name="ref1"></a></li>
 <li>Julier, Simon J., and Jeffrey K. Uhlmann. "New extension of the Kalman filter to nonlinear systems." Signal processing, sensor fusion, and target recognition VI. Vol. 3068. Spie, 1997.<a name="ref2"></a></li>
@@ -443,6 +443,9 @@ w_m^{[i]} &amp;= w_c^{[i]} = \frac{1}{2(n+\lambda)} \ \ \ \text{for i = 1,2,.., 
                 </a>
             </div>
             <div class="post-nav-item">
+                <a href="/notes/rotate/" rel="next" title="学习笔记：三维空间刚体运动：旋转矩阵与四元数">
+                  学习笔记：三维空间刚体运动：旋转矩阵与四元数 <i class="fa fa-chevron-right"></i>
+                </a>
             </div>
           </div>
     </footer>

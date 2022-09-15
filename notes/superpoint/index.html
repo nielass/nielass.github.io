@@ -18,7 +18,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha256-xejo6yLi6vGtAjcMIsY8BHdKsLg7QynVlFMzdQgUuy8=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"nielass.xyz","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"nielass.xyz","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="这篇文章是我学习SuperPoint的笔记。 SuperPoint设计了一个自监督框架，可以同时提取特征点（keypoint detector）和描述子（descriptor）。 文章特点  全卷积网络（Fully-convolutional neural network architecture） 同时提取特征点及特征点描述 使用自监督训练框架Homographic Adaptation">
 <meta property="og:type" content="article">
@@ -104,7 +104,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home Home fa-fw"></i>Home</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags Tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th Categories fa-fw"></i>Categories</a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home Home fa-fw"></i>Home</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags Tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th Categories fa-fw"></i>Categories</a></li><li class="menu-item menu-item-materials"><a href="/materials/" rel="section"><i class="fa fa-book Materials fa-fw"></i>Materials</a></li>
   </ul>
 </nav>
 
@@ -135,7 +135,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#superpoint-architecture"><span class="nav-number">2.</span> <span class="nav-text">SuperPoint Architecture</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#shared-encoder"><span class="nav-number">2.1.</span> <span class="nav-text">Shared Encoder</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#interest-point-decoder"><span class="nav-number">2.2.</span> <span class="nav-text">Interest Point Decoder</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#descriptor-decoder"><span class="nav-number">2.3.</span> <span class="nav-text">Descriptor Decoder</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#training"><span class="nav-number">3.</span> <span class="nav-text">Training</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#loss-function"><span class="nav-number">3.1.</span> <span class="nav-text">Loss Function</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#base-detector"><span class="nav-number">3.2.</span> <span class="nav-text">Base Detector</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#homographic-adaptation"><span class="nav-number">3.3.</span> <span class="nav-text">Homographic Adaptation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#joint-training"><span class="nav-number">3.4.</span> <span class="nav-text">Joint Training</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#experiment"><span class="nav-number">4.</span> <span class="nav-text">Experiment</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#reference"><span class="nav-number">5.</span> <span class="nav-text">reference</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#superpoint-architecture"><span class="nav-number">2.</span> <span class="nav-text">SuperPoint Architecture</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#shared-encoder"><span class="nav-number">2.1.</span> <span class="nav-text">Shared Encoder</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#interest-point-decoder"><span class="nav-number">2.2.</span> <span class="nav-text">Interest Point Decoder</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#descriptor-decoder"><span class="nav-number">2.3.</span> <span class="nav-text">Descriptor Decoder</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#training"><span class="nav-number">3.</span> <span class="nav-text">Training</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#loss-function"><span class="nav-number">3.1.</span> <span class="nav-text">Loss Function</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#base-detector"><span class="nav-number">3.2.</span> <span class="nav-text">Base Detector</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#homographic-adaptation"><span class="nav-number">3.3.</span> <span class="nav-text">Homographic Adaptation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#joint-training"><span class="nav-number">3.4.</span> <span class="nav-text">Joint Training</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#experiment"><span class="nav-number">4.</span> <span class="nav-text">Experiment</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#reference"><span class="nav-number">5.</span> <span class="nav-text">Reference</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -148,18 +148,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-count">9</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">9</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-count">21</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -368,7 +368,7 @@
 <figure>
 <img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220827222826591.png" alt="Result 2" /><figcaption>Result 2</figcaption>
 </figure>
-<h1 id="reference">reference</h1>
+<h1 id="reference">Reference</h1>
 <ol type="1">
 <li>DeTone, Daniel, Tomasz Malisiewicz, and Andrew Rabinovich. "Superpoint: Self-supervised interest point detection and description." Proceedings of the IEEE conference on computer vision and pattern recognition workshops. 2018.</li>
 <li><a target="_blank" rel="noopener" href="https://github.com/magicleap/SuperGluePretrainedNetwork">SuperGlue源码</a><a name="ref2"></a></li>

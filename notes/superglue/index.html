@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha256-xejo6yLi6vGtAjcMIsY8BHdKsLg7QynVlFMzdQgUuy8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"nielass.xyz","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="这篇文章是我学习SuperGlue的笔记。 SuperGlue是用于解决两幅图片中局部特征间的匹配问题的方法，作者在解决这个问题中引入了图神经网络（Graph Neural Network），基于注意力的上下文聚合机制（Context Aggregation Mechanism Based On Attention），以及可微最优传输问题（Differentiable Optimal Transp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="论文笔记：SuperGlue: Learning Feature Matching with Graph Neural Networks">
+<meta property="og:url" content="https://nielass.xyz/notes/superglue/index.html">
+<meta property="og:site_name" content="The Library">
+<meta property="og:description" content="这篇文章是我学习SuperGlue的笔记。 SuperGlue是用于解决两幅图片中局部特征间的匹配问题的方法，作者在解决这个问题中引入了图神经网络（Graph Neural Network），基于注意力的上下文聚合机制（Context Aggregation Mechanism Based On Attention），以及可微最优传输问题（Differentiable Optimal Transp">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220914151008598.png">
+<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220914151054076.png">
+<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220914204007518.png">
+<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220915110942643.png">
+<meta property="article:published_time" content="2022-09-14T11:02:22.000Z">
+<meta property="article:modified_time" content="2022-09-14T22:00:00.000Z">
+<meta property="article:author" content="Nielass">
+<meta property="article:tag" content="Local Descriptor">
+<meta property="article:tag" content="Key Point">
+<meta property="article:tag" content="Pose Estimation">
+<meta property="article:tag" content="Structure from Motion (SfM)">
+<meta property="article:tag" content="Matching Descriptor">
+<meta property="article:tag" content="Attention Mechanism">
+<meta property="article:tag" content="Graph Neural Network">
+<meta property="article:tag" content="Sinkhorn Algorithm">
+<meta property="article:tag" content="Optimal Transport Problem">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220914151008598.png">
+
+
+<link rel="canonical" href="https://nielass.xyz/notes/superglue/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://nielass.xyz/notes/superglue/","path":"notes/superglue/","title":"论文笔记：SuperGlue: Learning Feature Matching with Graph Neural Networks"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>论文笔记：SuperGlue: Learning Feature Matching with Graph Neural Networks | The Library</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">The Library</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home Home fa-fw"></i>Home</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags Tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th Categories fa-fw"></i>Categories</a></li><li class="menu-item menu-item-materials"><a href="/materials/" rel="section"><i class="fa fa-book Materials fa-fw"></i>Materials</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#overview"><span class="nav-number">1.</span> <span class="nav-text">Overview</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#formulation"><span class="nav-number">1.1.</span> <span class="nav-text">Formulation</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#attentional-graph-neural-network"><span class="nav-number">2.</span> <span class="nav-text">Attentional Graph Neural Network</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#keypoint-encoder"><span class="nav-number">2.1.</span> <span class="nav-text">Keypoint Encoder</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#multiplex-graph-neural-network"><span class="nav-number">2.2.</span> <span class="nav-text">Multiplex Graph Neural Network</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#attentional-aggregation"><span class="nav-number">2.3.</span> <span class="nav-text">Attentional Aggregation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#matching-descriptor"><span class="nav-number">2.4.</span> <span class="nav-text">Matching descriptor</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#optimal-matching-layer"><span class="nav-number">3.</span> <span class="nav-text">Optimal Matching Layer</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#score-prediction"><span class="nav-number">3.1.</span> <span class="nav-text">Score Prediction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#occlusion-and-visibility"><span class="nav-number">3.2.</span> <span class="nav-text">Occlusion and Visibility</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sinkhorn-algorithm"><span class="nav-number">3.3.</span> <span class="nav-text">Sinkhorn Algorithm</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#loss-function"><span class="nav-number">4.</span> <span class="nav-text">Loss Function</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#additional-material"><span class="nav-number">5.</span> <span class="nav-text">Additional Material</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#optimal-transport-problem"><span class="nav-number">5.1.</span> <span class="nav-text">Optimal Transport Problem</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#sinkhorn-distances-sinkhorn-algorithm"><span class="nav-number">5.1.1.</span> <span class="nav-text">Sinkhorn distances &amp; Sinkhorn algorithm</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#attention-mechanism"><span class="nav-number">5.2.</span> <span class="nav-text">Attention mechanism</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#reference"><span class="nav-number">6.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Nielass</p>
+  <div class="site-description" itemprop="description">I hope you will find what you are looking for here</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://nielass.xyz/notes/superglue/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Nielass">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="The Library">
+      <meta itemprop="description" content="I hope you will find what you are looking for here">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="论文笔记：SuperGlue: Learning Feature Matching with Graph Neural Networks | The Library">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          论文笔记：SuperGlue: Learning Feature Matching with Graph Neural Networks
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-09-14 13:02:22" itemprop="dateCreated datePublished" datetime="2022-09-14T13:02:22+02:00">2022-09-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2022-09-15 00:00:00" itemprop="dateModified" datetime="2022-09-15T00:00:00+02:00">2022-09-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/SLAM/" itemprop="url" rel="index"><span itemprop="name">SLAM</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/SLAM/VIO/" itemprop="url" rel="index"><span itemprop="name">VIO</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MachineLearning/" itemprop="url" rel="index"><span itemprop="name">MachineLearning</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MachineLearning/DeepLearning/" itemprop="url" rel="index"><span itemprop="name">DeepLearning</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MachineLearning/ComputerVision/" itemprop="url" rel="index"><span itemprop="name">ComputerVision</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Math/" itemprop="url" rel="index"><span itemprop="name">Math</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>这篇文章是我学习SuperGlue的笔记。</p>
+<p>SuperGlue是用于解决两幅图片中局部特征间的匹配问题的方法，作者在解决这个问题中引入了图神经网络（Graph Neural Network），基于注意力的上下文聚合机制（Context Aggregation Mechanism Based On Attention），以及可微最优传输问题（Differentiable Optimal Transport Problem）。</p>
+<p>本文特点：</p>
+<ol type="1">
+<li>使用SuperPoint作为特征点和局部描述子的提取器</li>
+<li>介绍了Attentional Graph Neural Network，基于注意力的message的设计和匹配描述子</li>
+<li>介绍了Optimal Matching Layer，将匹配问题转化为可微最优传输问题，并使用Sinkhorn Algorithm进行求解</li>
+<li>超高精度，召回率和实时性能</li>
+</ol>
+<span id="more"></span>
+<h1 id="overview">Overview</h1>
+<p>整篇文章主要介绍了SuperGlue的网络设计和实验结果。</p>
+<p>作者将SuperGlue的网络设计分为两大块：</p>
+<ol type="1">
+<li>Attentional Graph Neural Network</li>
+<li>Optimal Matching Layer</li>
+</ol>
+<p>在Attentional Graph Neural Network中，网络将SuperPoint提取的信息转化为匹配描述子（matching descriptor）。</p>
+<p>在Optimal Matching Layer中，网络将两幅图的匹配描述子转化为最优传输问题（Optimal Transport Problem），然后使用Sinkhorn算法求解。</p>
+<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220914151008598.png" /></p>
+<p>整个算法的设计是为了求解，给定两幅图的局部描述，输出一个描述局部描述之间的匹配的情况的矩阵<span class="math inline">\(\mathbf P\)</span>，如下图所示：</p>
+<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220914151054076.png" /></p>
+<h2 id="formulation">Formulation</h2>
+<p>首先，作者基于现实世界中点与特征的特点提出：</p>
+<ol type="1">
+<li>一幅图中的一个关键点在另一幅图中最多只有一个相关点（correspondence）</li>
+<li>由于遮挡或者检测器（detector）的失效等，一些关键点可能没有匹配</li>
+</ol>
+<p>基于这个观点，作者将匹配问题转化成部分分配问题（partial assignment），数学描述如下：</p>
+<p>给定两幅图<span class="math inline">\(A\)</span>和<span class="math inline">\(B\)</span>，其中<span class="math inline">\(A\)</span>中有<span class="math inline">\(M\)</span>个局部特征，<span class="math inline">\(B\)</span>中有<span class="math inline">\(N\)</span>个特征，每个局部特征为<span class="math inline">\((\mathbf p_i, \mathbf d_i)\)</span>。</p>
+<p>局部特征中包含了关键点位置<span class="math inline">\(\mathbf p_i = (x,y,c)_i\)</span>，这里的<span class="math inline">\(x\)</span>和<span class="math inline">\(y\)</span>是位置坐标，而<span class="math inline">\(c\)</span>是检测信心（detection confidence）。以及由SuperPoint或者SIFT提取的视觉描述（visual descriptor）<span class="math inline">\(\mathbf d \in \mathbb R^D\)</span>。</p>
+<p>部分分配可以被写成：</p>
+<p>定义一个包含信心值（confidence value）的矩阵<span class="math inline">\(\mathbf P \in \left[0, 1 \right]^{M\times N}\)</span>满足 <span class="math display">\[
+\mathbf P \mathbf 1_N \le \mathbf 1_M \\
+\mathbf P^T \mathbf 1_M \le \mathbf 1_N
+\]</span> 这里的<span class="math inline">\(\mathbf 1_M\)</span>和<span class="math inline">\(\mathbf 1_N\)</span>为全<span class="math inline">\(1\)</span>向量。这个矩阵的每一行描述了图<span class="math inline">\(A\)</span>中的某个特征点与图<span class="math inline">\(B\)</span>中每一个特征点匹配的信心或者概率，每一列描述了图<span class="math inline">\(B\)</span>中的某个特征点与图<span class="math inline">\(A\)</span>中每一个特征点匹配的信心或者概率。那么，在理想情况下，矩阵的每一行求和和每一列求和都应该为<span class="math inline">\(1\)</span>。之所以上述表达式写成小于等于，是为了处理没有匹配的情况。</p>
+<h1 id="attentional-graph-neural-network">Attentional Graph Neural Network</h1>
+<p>基于注意力机制的图神经网络是作者用于模仿人类进行特征匹配而设计的。</p>
+<p>人类做特征匹配的时候首先做尝试性的匹配点筛选，然后与另一张图中的特征点进行匹配，通过在两张图之间进行来回检查数次，寻找更好的特征点候选以及对应的匹配关系。</p>
+<p>作者将整个网络设计的介绍分为了三个部分：</p>
+<ol type="1">
+<li>Keypoint Encoder</li>
+<li>Multiplex Graph Neural Network</li>
+<li>Attentional Aggregation</li>
+</ol>
+<p>前两个部分介绍了网络的设计，第三个部分介绍了message的设计。</p>
+<h2 id="keypoint-encoder">Keypoint Encoder</h2>
+<p>首先作者将输入的特征点位置<span class="math inline">\(\mathbf p_i\)</span>及其描述<span class="math inline">\(\mathbf d_i\)</span>进行了耦合，得到网络中每个元素初始表达形式（initial representation）： <span class="math display">\[
+^{(0)}\mathbf x_i = \mathbf d_i + \text{MLP}_{\text{enc}}(\mathbf p_i)
+\]</span> 其中<span class="math inline">\(\text{MLP}_{\text{enc}}(\cdot)\)</span>是多层感知机（Multilayer Perceptron）。</p>
+<p>作者认为这样做可以让神经网络在之后充分地联合考虑特征点的位置和描述。</p>
+<h2 id="multiplex-graph-neural-network">Multiplex Graph Neural Network</h2>
+<p>作者设计了一种完全图，每个节点（node）是每张图上的特征点（Keypoint），图中有两种无向边（undirected edges）：</p>
+<ol type="1">
+<li><p>Intra-image edges 或者 self edges <span class="math inline">\(\varepsilon_{self}\)</span></p>
+<p>这个edge将每个特征点<span class="math inline">\(i\)</span>与所有在同一张图的其他特征点相连</p></li>
+<li><p>Inter-image edges 或者 cross edges <span class="math inline">\(\varepsilon_{cross}\)</span></p>
+<p>这个edge将每个特征点<span class="math inline">\(i\)</span>与所有在另一张图的其他特征点相连</p></li>
+</ol>
+<p>之后作者引入了在图<span class="math inline">\(A\)</span>中第<span class="math inline">\(i\)</span>个元素的第<span class="math inline">\(l\)</span>层的中间表达形式（intermediate representation）<span class="math inline">\(^{(l)}\mathbf x_i^A\)</span>如下所示： <span class="math display">\[
+^{(l+1)}\mathbf x_i^A = ^{(l)}\mathbf x_i^A + \text{MLP}\left(\left[ ^{(l)}\mathbf x_i^A||\mathbf m_{\varepsilon\rightarrow i} \right]\right)
+\]</span> 其中<span class="math inline">\([\cdot||\cdot]\)</span>表示串联（concatenation）操作，而<span class="math inline">\(\mathbf m_{\varepsilon\rightarrow i}\)</span>是作者设计的信息（message），是通过与元素<span class="math inline">\(i\)</span>相连的边传递过来的信息聚合的结果，具体的设计会在下一小结讨论。</p>
+<p>对于两幅图的所有元素<span class="math inline">\(i\)</span>来说，与其相连的边有两种<span class="math inline">\(\{\varepsilon_{self},\varepsilon_{cross} \}\)</span>，在每一层更新中，<span class="math inline">\(\mathbf m_{\varepsilon\rightarrow i}\)</span>只会聚合其中一种边传来的消息，两种边交替进行更新，直到第<span class="math inline">\(L\)</span>层，这个<span class="math inline">\(L\)</span>是作为参数提前给定。举个例子，比如说在<span class="math inline">\(l\)</span>为奇数时，<span class="math inline">\(\mathbf m_{\varepsilon\rightarrow i}\)</span>由所有与<span class="math inline">\(i\)</span>相连的<span class="math inline">\(\varepsilon_{self}\)</span>计算，偶数时由<span class="math inline">\(\varepsilon_{cross}\)</span>计算。</p>
+<h2 id="attentional-aggregation">Attentional Aggregation</h2>
+<p>作者设计message时受到self-attention和cross-attention的启发。</p>
+<p>作者提到，类似数据库检索，给出我们的查询（query）<span class="math inline">\(\mathbf q_i\)</span>，通过被查询的元素的键（key）<span class="math inline">\(\mathbf k_i\)</span>，我们可以得到对应所需的值（value）<span class="math inline">\(\mathbf v_i\)</span>。作者将message定义为所有值的加权平均，如下： <span class="math display">\[
+\mathbf m_{\varepsilon\rightarrow i} = \displaystyle\sum_{j:(i,j)\in\varepsilon} \alpha_{ij}\mathbf v_j
+\]</span></p>
+<p>其中权重由查询与键的相似度决定：<span class="math inline">\(\alpha_{ij}=\text{softmax}(\mathbf q_i^T\mathbf k_j)\)</span>，而<span class="math inline">\(\varepsilon\)</span>表示此次更新所用的边的种类。</p>
+<p>在文中，作者将所计算的特征向量的线性投影作为计算上述三个值的方法。假如我们查询图<span class="math inline">\(Q\)</span>中的特征点（或者元素）<span class="math inline">\(i\)</span>，所有被查询的点（源点，source keypoint）在图<span class="math inline">\(S\)</span>中，其中<span class="math inline">\(Q\)</span>和<span class="math inline">\(S\)</span>可以任意取<span class="math inline">\(A\)</span>或者<span class="math inline">\(B\)</span>，即<span class="math inline">\((Q,S)\in \{A,B\}^2\)</span>。那么我们可以计算： <span class="math display">\[
+\mathbf q_i = \mathbf W_1 \ ^{(l)}\mathbf x_i^S+\mathbf b_1 \\
+\left[
+\begin{array}{c}
+\mathbf k_j \\
+\mathbf v_j
+\end{array}
+\right]
+=
+\left[
+\begin{array}{c}
+\mathbf W_2 \\
+\mathbf W_3
+\end{array}
+\right]
+\ ^{(l)}\mathbf x_j^S
++
+\left[
+\begin{array}{c}
+\mathbf b_2 \\
+\mathbf b_3
+\end{array}
+\right]
+\]</span></p>
+<p>每一层<span class="math inline">\(l\)</span>拥有自己的投影参数，投影参数被所有关键点使用。最终，作者使用multi-head attention完成message的计算。</p>
+<p>作者给出了一个不同层间，attention的情况：</p>
+<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220914204007518.png" /></p>
+<p>可以看出，self-attention在一开始时会关联到同一幅图中的所有点，经过几层之后，逐渐集中到了周围的点上面。而cross-attention也表现出了一样的收敛情况，两幅图之间进行匹配的时候，在另一幅图的候选点的数量逐渐减小。</p>
+<h2 id="matching-descriptor">Matching descriptor</h2>
+<p>经过<span class="math inline">\(L\)</span>次的交替的self/cross-attention的计算之后，作者同样通过线性投影计算了每个特征点的匹配描述子（matching descriptor）： <span class="math display">\[
+\mathbf f_i^A = \mathbf W ^{(l)}\mathbf x_i^A + \mathbf b \text{, } \forall i\in A \\
+\mathbf f_i^B = \mathbf W ^{(l)}\mathbf x_i^B + \mathbf b \text{, } \forall i\in B
+\]</span></p>
+<h1 id="optimal-matching-layer">Optimal Matching Layer</h1>
+<p>最优匹配层的目的是求解软分配矩阵<span class="math inline">\(\mathbf P\)</span>。</p>
+<p>一般来说，对于每一个可能的匹配，我们都可以得出一个得分矩阵（score matrix）<span class="math inline">\(\mathbf S \in \mathbb R^{M\times N}\)</span>，我们只要使得<span class="math inline">\(\mathbf P\)</span>最大化总得分即可，即 <span class="math display">\[
+\mathbf P = \arg\max_{\mathbf P} \sum_{i,j}\mathbf S_{i,j} \mathbf P_{i,j}
+\]</span> 需要注意的是，这里的软分配矩阵需要满足之前所提到的<a href="#Formulation">约束</a>。</p>
+<h2 id="score-prediction">Score Prediction</h2>
+<p>对所有可能匹配计算一个<span class="math inline">\(\mathbf S\)</span>几乎不可能，作者使用了上一部分计算的匹配描述子来计算<span class="math inline">\(\mathbf S\)</span>中的每个元素： <span class="math display">\[
+S_{i,j} = &lt;\mathbf f_i^A, \mathbf f_j^B&gt;\text{, } \forall(i,j)\in A\times B
+\]</span> 这里的<span class="math inline">\(&lt;\cdot, \cdot&gt;\)</span>表示内积。</p>
+<p>并且作者提到，因为匹配描述子没有归一化，因此描述子的大小（magnitude）随着特征的变化而变化，在训练过程中，这个大小可以反映预测的信心（prediction confidence）。</p>
+<h2 id="occlusion-and-visibility">Occlusion and Visibility</h2>
+<p>为了处理某个特征点在另一幅图中没有对应匹配的情况，作者采用了与SuperPoint类似的方法，在<span class="math inline">\(\mathbf S\)</span>和<span class="math inline">\(\mathbf P\)</span>中加入了dustbin。</p>
+<p>为了获得增广后的<span class="math inline">\(\mathbf {\bar S}\)</span>，作者在原矩阵加入一个新的行和新的列，并填入可学习参数（learnable parameter）： <span class="math display">\[
+\mathbf {\bar S}_{i,N+1}=\mathbf {\bar S}_{M+1, j}=\mathbf {\bar S}_{M+1,N+1}=z\in \mathbb R
+\]</span> 对于原本的<span class="math inline">\(\mathbf P\)</span>约束来说，每一个点最多只有一个匹配，但是对于dustbin来说，最多的匹配数量是另一幅图的特征点数量，因此增广后的<span class="math inline">\(\mathbf {\bar P}\)</span>应该满足： <span class="math display">\[
+\mathbf {\bar P} \mathbf 1_{N+1} = \mathbf a \\
+\mathbf {\bar P}^T \mathbf 1_{M+1} = \mathbf b
+\]</span> 其中<span class="math inline">\(\mathbf a = \left[\mathbf 1_M^T \ \ N \right]^T\)</span>以及<span class="math inline">\(\mathbf b = \left[\mathbf 1_N^T \ \ M \right]^T\)</span>。并且，由于加入的dustbin可以起到<a target="_blank" rel="noopener" href="https://github.com/magicleap/SuperGluePretrainedNetwork/issues/36">松弛化（slackness）</a>的作用，我们可以将之前的不等式换成等式。</p>
+<h2 id="sinkhorn-algorithm">Sinkhorn Algorithm</h2>
+<p>计算完<span class="math inline">\(\mathbf {\bar S}\)</span>后，我们获得了将问题转化为最优传输的最后一块拼图。</p>
+<p>作者在这里使用了Sinkhorn Algorithm来求解最后的<span class="math inline">\(\mathbf {\bar P}\)</span>，之后只要把dustbin去掉，就可以获得我们需要的<span class="math inline">\(\mathbf {P}\)</span>。</p>
+<h1 id="loss-function">Loss Function</h1>
+<p>因为上述Attentional Graph Neural Network和Optimal Matching Layer都是可微的，因此反向传播可以被使用。</p>
+<p>数据集中包含了匹配的真值（ground truth matches）<span class="math inline">\(\mathcal M = \{(i,j)\}\subset A\times B\)</span>和无匹配的关键点<span class="math inline">\(\mathcal I \subseteq A, \mathcal J \subseteq B\)</span>。</p>
+<p>损失函数定义如下： $$ <span class="math display">\[\begin{align}
+Loss 
+= &amp;-\sum_{(i,j)\in \mathcal M} \log \mathbf {\bar P}_{i,j}\\
+ &amp;-\sum_{i \in \mathcal I} \log \mathbf {\bar P}_{i,N+1} \\
+ &amp;-\sum_{j \in \mathcal J} \log \mathbf {\bar P}_{M+1,j}
+
+\end{align}\]</span> $$</p>
+<h1 id="additional-material">Additional Material</h1>
+<p>因为这篇论文介绍了很多我之前不太了解的概念，比如注意力机制，最优运输等，因此我额外查找了一些资料，我将它们归纳在这里。</p>
+<h2 id="optimal-transport-problem">Optimal Transport Problem</h2>
+<p>举一个分蛋糕的例子来解释最优传输问题。</p>
+<p>令向量<span class="math inline">\(\mathbf r \in \mathbb R^n\)</span>的每个元素表示<span class="math inline">\(n\)</span>个人中每个人可以吃下的蛋糕数量，向量<span class="math inline">\(\mathbf c \in \mathbb R^m\)</span>的每个元素表示<span class="math inline">\(m\)</span>种蛋糕中每一种蛋糕的数量。</p>
+<p>令一种分蛋糕的方法为矩阵<span class="math inline">\(P\in\mathbb R^{n\times m}\)</span>，那么可以有一个集合来表达所有分蛋糕的方法： <span class="math display">\[
+U(\mathbf r, \mathbf c) = \left\{P\in\mathbb R^{n\times m} | P\mathbf1_m = \mathbf r, P^T\mathbf1_n = \mathbf c \right\}
+\]</span> 其中矩阵<span class="math inline">\(P\)</span>的每个元素应该大于等于<span class="math inline">\(0\)</span>，且不要求是整数，因为我们可以将一块蛋糕切成任意小块。</p>
+<p>每一个人对不同种的蛋糕有不同的偏好。比如一个人喜欢巧克力蛋糕，那么当他被分到巧克力蛋糕是，就会给出较高的偏好值或者得分（score），或者给出较低的cost。在这里我们用一个Cost矩阵<span class="math inline">\(M\in\mathbb R^{n\times m}\)</span>来描述。</p>
+<p>那么最优的Cost值可以表示为： <span class="math display">\[
+d_M(\mathbf r, \mathbf c) = \min_{P\in U(\mathbf r, \mathbf c)} \sum_{i,j}P_{ij}M_{ij}
+\]</span> 即两个矩阵的对应元素相乘求和。</p>
+<p>这就被称作<span class="math inline">\(\mathbf r\)</span>和<span class="math inline">\(\mathbf c\)</span>之间的最优传输问题，这个问题可以用线性规划相对容易地求解。<span class="math inline">\(d_M(\mathbf r, \mathbf c)\)</span>被称为<em>Wasserstein metric</em>或者<em>earth mover distance</em>，基本上可以视作两个不同概率分布的距离。</p>
+<h3 id="sinkhorn-distances-sinkhorn-algorithm">Sinkhorn distances &amp; Sinkhorn algorithm</h3>
+<p>首先，我们修改一下上述式子： <span class="math display">\[
+d_M^\lambda(\mathbf r, \mathbf c) = \min_{P\in U(\mathbf r, \mathbf c)} \sum_{i,j}P_{ij}M_{ij} - \frac 1 \lambda h(P)
+\]</span> 新的最小值<span class="math inline">\(d_M^\lambda(\mathbf r, \mathbf c)\)</span>被称作<em>Sinkhorn distance</em>。其中新加入的项： <span class="math display">\[
+h(P) = -\sum_{i,j}P_{ij}\log P_{ij}
+\]</span> 是<span class="math inline">\(P\)</span>的信息熵（information entropy）。</p>
+<p>我们可以通过提高熵来使得分布更加的均匀（homogeneous）。正则项参数<span class="math inline">\(\lambda\)</span>被用于调节不同的行为，比如说尽量只分配给某人他喜欢的蛋糕或者尽可能均分。</p>
+<p>因为我们引入了新的项，因此问题变得更难解决。Sinkhorn algorithm提供了一个解决这个问题的高效的方法。</p>
+<p>首先这个算法发现最优分配矩阵每一个元素可以写成如下形式： <span class="math display">\[
+(P_\lambda^\star)_{ij} = \alpha_i\beta_j\exp(-\lambda M_{ij})
+\]</span> 这里的参数<span class="math inline">\(\alpha\)</span>和<span class="math inline">\(\beta\)</span>用于使矩阵满足前面介绍的约束。</p>
+<p>那么给出算法：</p>
+<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220915110942643.png" /></p>
+<p>以及算法的python实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">compute_optimal_transport</span>(<span class="params">M, r, c, lam, epsilon=<span class="number">1e-8</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Computes the optimal transport matrix and Slinkhorn distance using the</span></span><br><span class="line"><span class="string">    Sinkhorn-Knopp algorithm</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Inputs:</span></span><br><span class="line"><span class="string">        - M : cost matrix (n x m)</span></span><br><span class="line"><span class="string">        - r : vector of marginals (n, )</span></span><br><span class="line"><span class="string">        - c : vector of marginals (m, )</span></span><br><span class="line"><span class="string">        - lam : strength of the entropic regularization</span></span><br><span class="line"><span class="string">        - epsilon : convergence parameter</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Outputs:</span></span><br><span class="line"><span class="string">        - P : optimal transport matrix (n x m)</span></span><br><span class="line"><span class="string">        - dist : Sinkhorn distance</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    n, m = M.shape</span><br><span class="line">    P = np.exp(- lam * M)</span><br><span class="line">    P /= P.<span class="built_in">sum</span>()</span><br><span class="line">    u = np.zeros(n)</span><br><span class="line">    <span class="comment"># normalize this matrix</span></span><br><span class="line">    <span class="keyword">while</span> np.<span class="built_in">max</span>(np.<span class="built_in">abs</span>(u - P.<span class="built_in">sum</span>(<span class="number">1</span>))) &gt; epsilon:</span><br><span class="line">        u = P.<span class="built_in">sum</span>(<span class="number">1</span>)</span><br><span class="line">        P *= (r / u).reshape((-<span class="number">1</span>, <span class="number">1</span>))</span><br><span class="line">        P *= (c / P.<span class="built_in">sum</span>(<span class="number">0</span>)).reshape((<span class="number">1</span>, -<span class="number">1</span>))</span><br><span class="line">    <span class="keyword">return</span> P, np.<span class="built_in">sum</span>(P * M)</span><br></pre></td></tr></table></figure>
+<p>其他大佬博客提供了计算例子，例如<a href="#ref5">RealCat大佬笔记</a>的3.3.3，以及<a href="#ref4">Notes</a>中提供的例子。</p>
+<h2 id="attention-mechanism">Attention mechanism</h2>
+<p>注意力机制我主要参考了<a href="#ref7">论文</a>和这篇<a href="#ref8">笔记</a>。</p>
+<h1 id="reference">Reference</h1>
+<ol type="1">
+<li>Sarlin, Paul-Edouard, et al. "Superglue: Learning feature matching with graph neural networks." Proceedings of the IEEE/CVF conference on computer vision and pattern recognition. 2020.</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/magicleap/SuperGluePretrainedNetwork">SuperGlue源码</a></li>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Assignment_problem">Assignment_problem</a></li>
+<li><a target="_blank" rel="noopener" href="https://michielstock.github.io/posts/2017/2017-11-5-OptimalTransport/#choosing_a_bit_of_everything">Notes on Optimal Transport</a><a name="ref4"></a></li>
+<li><a target="_blank" rel="noopener" href="https://vincentqin.tech/posts/superglue/">RealCat大佬笔记</a><a name="ref5"></a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/shizhuoduao/article/details/107120805#t11">Pxmzhao参考笔记</a></li>
+<li>Vaswani, Ashish, et al. "Attention is all you need." <em>Advances in neural information processing systems</em> 30 (2017).<a name="ref7"></a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/tg229dvt5i93mxaq5a6u/article/details/78422216">深度学习中的注意力机制</a><a name="ref8"></a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Local-Descriptor/" rel="tag"># Local Descriptor</a>
+              <a href="/tags/Key-Point/" rel="tag"># Key Point</a>
+              <a href="/tags/Pose-Estimation/" rel="tag"># Pose Estimation</a>
+              <a href="/tags/Structure-from-Motion-SfM/" rel="tag"># Structure from Motion (SfM)</a>
+              <a href="/tags/Matching-Descriptor/" rel="tag"># Matching Descriptor</a>
+              <a href="/tags/Attention-Mechanism/" rel="tag"># Attention Mechanism</a>
+              <a href="/tags/Graph-Neural-Network/" rel="tag"># Graph Neural Network</a>
+              <a href="/tags/Sinkhorn-Algorithm/" rel="tag"># Sinkhorn Algorithm</a>
+              <a href="/tags/Optimal-Transport-Problem/" rel="tag"># Optimal Transport Problem</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/notes/imu/" rel="prev" title="学习笔记：惯性测量器件（Inertial Measurement Unit）">
+                  <i class="fa fa-chevron-left"></i> 学习笔记：惯性测量器件（Inertial Measurement Unit）
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Nielass</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

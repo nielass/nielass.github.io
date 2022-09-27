@@ -27,28 +27,12 @@
 <meta property="og:site_name" content="The Library">
 <meta property="og:description" content="这篇文章简单归纳了一下三维空间中对运动的描述方法。 三维空间中的的运动一般可以分为旋转（rotation）和平移（translation），为了描述这两个运动，我们可以使用  旋转矩阵 齐次坐标 四元数">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220902150903990.png">
-<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220902151033432.png">
-<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220902161610058.png">
-<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220902162352312.png">
-<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220902162851095.png">
-<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220902181418100.png">
-<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220907101653086.png">
-<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220902183132927.png">
-<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220907095105398.png">
-<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220907095155252.png">
-<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220907095911606.png">
-<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220907100055246.png">
-<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220907101741728.png">
-<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220907101750873.png">
-<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220907101804912.png">
 <meta property="article:published_time" content="2022-09-02T12:44:15.000Z">
 <meta property="article:modified_time" content="2022-09-06T22:00:00.000Z">
 <meta property="article:author" content="Nielass">
 <meta property="article:tag" content="Pose Estimation">
 <meta property="article:tag" content="State Estimation">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220902150903990.png">
 
 
 <link rel="canonical" href="https://nielass.xyz/notes/rotate/">
@@ -137,7 +121,8 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B9%B3%E7%A7%BB%E4%B8%8E%E5%8F%82%E8%80%83%E7%B3%BB"><span class="nav-number">1.</span> <span class="nav-text">平移与参考系</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%8B%E8%BD%AC%E4%B8%8E%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5"><span class="nav-number">2.</span> <span class="nav-text">旋转与旋转矩阵</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5%E7%89%B9%E6%80%A7"><span class="nav-number">2.1.</span> <span class="nav-text">旋转矩阵特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AC%A7%E6%8B%89%E8%A7%92euler-angles"><span class="nav-number">2.2.</span> <span class="nav-text">欧拉角（Euler Angles）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%8B%E8%BD%AC%E5%90%91%E9%87%8F"><span class="nav-number">2.3.</span> <span class="nav-text">旋转向量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5%E7%9A%84%E5%BE%AE%E5%88%86"><span class="nav-number">2.4.</span> <span class="nav-text">旋转矩阵的微分</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%BD%90%E6%AC%A1%E5%8F%98%E6%8D%A2homogeneous-transformation"><span class="nav-number">3.</span> <span class="nav-text">齐次变换（Homogeneous Transformation）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%9B%E5%85%83%E6%95%B0quaternion"><span class="nav-number">4.</span> <span class="nav-text">四元数（Quaternion）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A1%A8%E7%A4%BA%E6%96%B9%E6%B3%95"><span class="nav-number">4.1.</span> <span class="nav-text">表示方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%90%E7%AE%97%E6%96%B9%E6%B3%95"><span class="nav-number">4.2.</span> <span class="nav-text">运算方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E5%85%83%E6%95%B0%E4%B8%8E%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5%E4%B9%8B%E9%97%B4%E7%9A%84%E8%BD%AC%E6%8D%A2"><span class="nav-number">4.3.</span> <span class="nav-text">四元数与旋转矩阵之间的转换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E5%85%83%E6%95%B0%E7%9A%84%E5%BE%AE%E5%88%86%E6%96%B9%E7%A8%8B"><span class="nav-number">4.4.</span> <span class="nav-text">四元数的微分方程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#reference"><span class="nav-number">5.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B9%B3%E7%A7%BB%E4%B8%8E%E5%8F%82%E8%80%83%E7%B3%BB"><span class="nav-number">1.</span> <span class="nav-text">平移与参考系</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%8B%E8%BD%AC%E4%B8%8E%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5"><span class="nav-number">2.</span> <span class="nav-text">旋转与旋转矩阵</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5%E7%89%B9%E6%80%A7"><span class="nav-number">2.1.</span> <span class="nav-text">旋转矩阵特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AC%A7%E6%8B%89%E8%A7%92euler-angles"><span class="nav-number">2.2.</span> <span class="nav-text">欧拉角（Euler Angles）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%8B%E8%BD%AC%E5%90%91%E9%87%8F"><span class="nav-number">2.3.</span> <span class="nav-text">旋转向量</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%8B%E8%BD%AC%E5%90%91%E9%87%8F%E7%9A%84%E5%BE%AE%E5%88%86"><span class="nav-number">2.3.1.</span> <span class="nav-text">旋转向量的微分</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5%E7%9A%84%E5%BE%AE%E5%88%86"><span class="nav-number">2.4.</span> <span class="nav-text">旋转矩阵的微分</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%BD%90%E6%AC%A1%E5%8F%98%E6%8D%A2homogeneous-transformation"><span class="nav-number">3.</span> <span class="nav-text">齐次变换（Homogeneous
+Transformation）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%9B%E5%85%83%E6%95%B0quaternion"><span class="nav-number">4.</span> <span class="nav-text">四元数（Quaternion）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A1%A8%E7%A4%BA%E6%96%B9%E6%B3%95"><span class="nav-number">4.1.</span> <span class="nav-text">表示方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%90%E7%AE%97%E6%96%B9%E6%B3%95"><span class="nav-number">4.2.</span> <span class="nav-text">运算方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E5%85%83%E6%95%B0%E4%B8%8E%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5%E4%B9%8B%E9%97%B4%E7%9A%84%E8%BD%AC%E6%8D%A2"><span class="nav-number">4.3.</span> <span class="nav-text">四元数与旋转矩阵之间的转换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E5%85%83%E6%95%B0%E7%9A%84%E5%BE%AE%E5%88%86%E6%96%B9%E7%A8%8B"><span class="nav-number">4.4.</span> <span class="nav-text">四元数的微分方程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#reference"><span class="nav-number">5.</span> <span class="nav-text">Reference</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -150,7 +135,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-count">10</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -161,7 +146,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-count">22</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -248,7 +233,7 @@
         </span>
           , 
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Math/KinematicsDynamics/" itemprop="url" rel="index"><span itemprop="name">KinematicsDynamics</span></a>
+          <a href="/categories/KinematicsDynamics/" itemprop="url" rel="index"><span itemprop="name">KinematicsDynamics</span></a>
         </span>
     </span>
 
@@ -272,18 +257,30 @@
 <span id="more"></span>
 <h1 id="平移与参考系">平移与参考系</h1>
 <p>在描述运动的时候，我们首先要考虑在哪个参考系下描述运动。一般来说，我们会有（静止的）世界参考系、（运动的）机器人坐标系、（运动的）不同传感器（比如相机）坐标系。</p>
-<p>在只考虑位置坐标的情况下，机器人知道了一个物体<span class="math inline">\(P\)</span>相对于机器人（坐标系）<span class="math inline">\(^{j}O\)</span>的位置，要如何知道这个物体在世界坐标系<span class="math inline">\(^iO\)</span>的位置呢？在这种情况下，我们只需要做平移就行，也就是知道从世界坐标系零点到机器人坐标系零点的向量<span class="math inline">\(^ir_{^{j}O,^iO}\)</span>，然后做向量的加减法就能求的所需物体在世界坐标系下的坐标<span class="math inline">\(^ir_{P,^iO}\)</span>。</p>
+<p>在只考虑位置坐标的情况下，机器人知道了一个物体<span
+class="math inline">\(P\)</span>相对于机器人（坐标系）<span
+class="math inline">\(^{j}O\)</span>的位置，要如何知道这个物体在世界坐标系<span
+class="math inline">\(^iO\)</span>的位置呢？在这种情况下，我们只需要做平移就行，也就是知道从世界坐标系零点到机器人坐标系零点的向量<span
+class="math inline">\(^ir_{^{j}O,^iO}\)</span>，然后做向量的加减法就能求的所需物体在世界坐标系下的坐标<span
+class="math inline">\(^ir_{P,^iO}\)</span>。</p>
 <p>下图是平移的例子：</p>
 <figure>
-<img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220902150903990.png" alt="Translation" /><figcaption>Translation</figcaption>
+<img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220902150903990.png"
+alt="Translation" />
+<figcaption aria-hidden="true">Translation</figcaption>
 </figure>
 <p>标记含义为：</p>
 <figure>
-<img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220902151033432.png" alt="Notation" /><figcaption>Notation</figcaption>
+<img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220902151033432.png"
+alt="Notation" />
+<figcaption aria-hidden="true">Notation</figcaption>
 </figure>
 <h1 id="旋转与旋转矩阵">旋转与旋转矩阵</h1>
-<p>平移的描述非常简单，旋转的描述要复杂一些。一种简单的描述旋转的方式就是旋转矩阵<span class="math inline">\(R\)</span>。 <span class="math display">\[
-R = 
+<p>平移的描述非常简单，旋转的描述要复杂一些。一种简单的描述旋转的方式就是旋转矩阵<span
+class="math inline">\(R\)</span>。 <span class="math display">\[
+R =
 \left[
 \begin{array}{l}
 r_{11} &amp; r_{12} &amp; r_{13} \\
@@ -291,7 +288,9 @@ r_{21} &amp; r_{22} &amp; r_{23} \\
 r_{31} &amp; r_{32} &amp; r_{33} \\
 \end{array}
 \right]
-\]</span> 其中，旋转矩阵的每一列代表旋转后的坐标系的单位轴在原坐标系下的投影，即 <span class="math display">\[
+\]</span>
+其中，旋转矩阵的每一列代表旋转后的坐标系的单位轴在原坐标系下的投影，即
+<span class="math display">\[
 \left[
 \begin{array}{l}
 r_{11} \\
@@ -299,8 +298,8 @@ r_{21} \\
 r_{31} \\
 \end{array}
 \right]
-=^i\mathbf{e}_{x,^jO} 
-\ \ \ 
+=^i\mathbf{e}_{x,^jO}
+\ \ \
 \left[
 \begin{array}{l}
 r_{12} \\
@@ -308,8 +307,8 @@ r_{22} \\
 r_{32} \\
 \end{array}
 \right]
-=^i\mathbf{e}_{y,^jO} 
-\ \ \ 
+=^i\mathbf{e}_{y,^jO}
+\ \ \
 \left[
 \begin{array}{l}
 r_{13} \\
@@ -317,44 +316,86 @@ r_{23} \\
 r_{33} \\
 \end{array}
 \right]
-=^i\mathbf{e}_{z,^jO} 
+=^i\mathbf{e}_{z,^jO}
 \ \ \
-\]</span> 在上方的例子中，如果有了点<span class="math inline">\(P\)</span>在<span class="math inline">\(^jO\)</span>的坐标，以及<span class="math inline">\(^iO\)</span>与<span class="math inline">\(^jO\)</span>之间的旋转矩阵，我们就可以将点<span class="math inline">\(P\)</span>投影回<span class="math inline">\(^iO\)</span>，当然还要加上上面的平移，即通过<span class="math inline">\(^i\mathbf{r}_P = ^i\mathbf{R}_j \ ^j\mathbf{r}_P + ^i\mathbf{r}_{^jO,^iO}\)</span>来计算我们需要的坐标。</p>
+\]</span> 在上方的例子中，如果有了点<span
+class="math inline">\(P\)</span>在<span
+class="math inline">\(^jO\)</span>的坐标，以及<span
+class="math inline">\(^iO\)</span>与<span
+class="math inline">\(^jO\)</span>之间的旋转矩阵，我们就可以将点<span
+class="math inline">\(P\)</span>投影回<span
+class="math inline">\(^iO\)</span>，当然还要加上上面的平移，即通过<span
+class="math inline">\(^i\mathbf{r}_P = ^i\mathbf{R}_j \ ^j\mathbf{r}_P +
+^i\mathbf{r}_{^jO,^iO}\)</span>来计算我们需要的坐标。</p>
 <h2 id="旋转矩阵特性">旋转矩阵特性</h2>
 <p>旋转矩阵具有一些特性。</p>
 <ul>
-<li>链式法则，即<span class="math inline">\(^kR_j \ ^jR_i = ^kR_i\)</span></li>
+<li>链式法则，即<span class="math inline">\(^kR_j \ ^jR_i =
+^kR_i\)</span></li>
 <li>正交矩阵，即<span class="math inline">\(R^T R = I_3\)</span></li>
 <li>行列式为1，即<span class="math inline">\(\det(R) = 1\)</span></li>
 <li><span class="math inline">\(R_T = R^{-1}\)</span></li>
 </ul>
-<p>同时，旋转矩阵的集合还是特殊正交群（Special Orthogonal Group），或写成<span class="math inline">\(SO(m)\)</span>，对于二维情况<span class="math inline">\(m = 2\)</span>，对于三维情况<span class="math inline">\(m=3\)</span>。</p>
+<p>同时，旋转矩阵的集合还是特殊正交群（Special Orthogonal
+Group），或写成<span
+class="math inline">\(SO(m)\)</span>，对于二维情况<span
+class="math inline">\(m = 2\)</span>，对于三维情况<span
+class="math inline">\(m=3\)</span>。</p>
 <h2 id="欧拉角euler-angles">欧拉角（Euler Angles）</h2>
 <p>尽管我们的旋转矩阵有9个变量，但是事实上我们只有三个自由度：</p>
-<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220902161610058.png" /></p>
-<p>用欧拉角来表达旋转有很多种方式，这里举一个欧拉角的方法<span class="math inline">\(ZYZ\)</span>： <span class="math display">\[
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220902161610058.png" /></p>
+<p>用欧拉角来表达旋转有很多种方式，这里举一个欧拉角的方法<span
+class="math inline">\(ZYZ\)</span>： <span class="math display">\[
 \Phi = [\alpha \ \ \ \beta \ \ \ \gamma]^T
-\]</span> 旋转方式就是先绕<span class="math inline">\(z\)</span>轴旋转<span class="math inline">\(\gamma\)</span>角度，然后绕旋转后的<span class="math inline">\(y\)</span>轴旋转<span class="math inline">\(\beta\)</span>角度，最后绕旋转后的<span class="math inline">\(z\)</span>轴旋转<span class="math inline">\(\alpha\)</span>角度。最终的旋转矩阵为：</p>
-<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220902162352312.png" /></p>
-<p>一个问题在于，当我们使用三个实数表达旋转的时候会有奇异性问题。比如上面的方法，当我们的<span class="math inline">\(\gamma\)</span>取<span class="math inline">\(\frac{\pi}{2}\)</span>时，我们会丢失一个自由度，即Gimbal lock问题。</p>
+\]</span> 旋转方式就是先绕<span
+class="math inline">\(z\)</span>轴旋转<span
+class="math inline">\(\gamma\)</span>角度，然后绕旋转后的<span
+class="math inline">\(y\)</span>轴旋转<span
+class="math inline">\(\beta\)</span>角度，最后绕旋转后的<span
+class="math inline">\(z\)</span>轴旋转<span
+class="math inline">\(\alpha\)</span>角度。最终的旋转矩阵为：</p>
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220902162352312.png" /></p>
+<p>一个问题在于，当我们使用三个实数表达旋转的时候会有奇异性问题。比如上面的方法，当我们的<span
+class="math inline">\(\gamma\)</span>取<span
+class="math inline">\(\frac{\pi}{2}\)</span>时，我们会丢失一个自由度，即Gimbal
+lock问题。</p>
 <h2 id="旋转向量">旋转向量</h2>
 <p>另一种三变量表达旋转的方式是旋转向量。</p>
 <p>我们可以把任意旋转看成是围绕某个向量进行一定角度的旋转，这个向量在旋转前后的坐标系中的表达都一样。</p>
 <p>当我们把这个向量作为旋转轴时，我们可以把它的模长作为旋转的角度，用以下公式进行计算：</p>
-<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220902162851095.png" /></p>
-<p>并且罗德里格斯公式（Rodrigues’s Formula）还为我们提供了旋转变量和旋转矩阵之间的转换关系： <span class="math display">\[
-\mathbf{R} = \cos\theta \ \mathbf{I} + (1-\cos \theta)\mathbf{n}\mathbf{n}^T + \sin \theta \ \mathbf{n}^{\wedge}
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220902162851095.png" /></p>
+<p>并且罗德里格斯公式（Rodrigues’s
+Formula）还为我们提供了旋转变量和旋转矩阵之间的转换关系： <span
+class="math display">\[
+\mathbf{R} = \cos\theta \ \mathbf{I} + (1-\cos
+\theta)\mathbf{n}\mathbf{n}^T + \sin \theta \ \mathbf{n}^{\wedge}
 \]</span></p>
-<p>其中<span class="math inline">\(\mathbf{n}^{\wedge}\)</span>是<span class="math inline">\(\mathbf{n}\)</span>的反对称矩阵（skew matrix）。</p>
+<p>其中<span class="math inline">\(\mathbf{n}^{\wedge}\)</span>是<span
+class="math inline">\(\mathbf{n}\)</span>的反对称矩阵（skew
+matrix）。</p>
 <p>还有一种使用旋转向量的方式是使用一个单位方向向量和旋转角度来表达旋转。这种方式与旋转矩阵之间的转换公式如下：</p>
-<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220902181418100.png" /></p>
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220902181418100.png" /></p>
+<h3 id="旋转向量的微分">旋转向量的微分</h3>
+<p>在旋转矩阵微分方程中（下个小节），把旋转矩阵用等效旋转矢量表示，则可以求出等效旋转矢量的微分方程。这里略去推导过程，直接给答案：</p>
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220922154446643.png" /></p>
 <h2 id="旋转矩阵的微分">旋转矩阵的微分</h2>
-<p>有时候在姿态这里直接给一个简单的推导和结论：</p>
-<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220907101653086.png" /></p>
-<h1 id="齐次变换homogeneous-transformation">齐次变换（Homogeneous Transformation）</h1>
-<p>如果我们不想写成<span class="math inline">\(^i\mathbf{r}_P = ^i\mathbf{R}_j \ ^j\mathbf{r}_P + ^i\mathbf{r}_{^jO,^iO}\)</span>这种旋转完做加法的形式，只想写成一次变换的形式的话，我们可以使用齐次坐标<span class="math inline">\(^i\tilde {\mathbf{r}}_{P, ^iO}\)</span>。</p>
-<p>我们需要做的只是在原本的坐标向量中增加一个维度，然后扩展旋转矩阵，即上述变换写成： <span class="math display">\[
-^i\tilde {\mathbf{r}}_{P, ^iO} = 
+<p>有时候我们分析姿态的时候需要计算旋转矩阵的微分，这里直接给一个简单的推导和结论：</p>
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220907101653086.png" /></p>
+<h1 id="齐次变换homogeneous-transformation">齐次变换（Homogeneous
+Transformation）</h1>
+<p>如果我们不想写成<span class="math inline">\(^i\mathbf{r}_P =
+^i\mathbf{R}_j \ ^j\mathbf{r}_P +
+^i\mathbf{r}_{^jO,^iO}\)</span>这种旋转完做加法的形式，只想写成一次变换的形式的话，我们可以使用齐次坐标<span
+class="math inline">\(^i\tilde {\mathbf{r}}_{P, ^iO}\)</span>。</p>
+<p>我们需要做的只是在原本的坐标向量中增加一个维度，然后扩展旋转矩阵，即上述变换写成：
+<span class="math display">\[
+^i\tilde {\mathbf{r}}_{P, ^iO} =
 \left[
 \begin{array}{l}
 ^i\mathbf{R}_j  &amp; ^i {\mathbf{r}}_{^jO, ^iO} \\
@@ -368,14 +409,18 @@ r_{33} \\
 \end{array}
 \right]
 = ^i\mathbf{T}_j \ ^j\tilde {\mathbf{r}}_{P, ^jO}
-\]</span> 齐次坐标的一个特性在于，乘以任意非零常数<span class="math inline">\(k\)</span>，坐标不变，即： <span class="math display">\[
+\]</span> 齐次坐标的一个特性在于，乘以任意非零常数<span
+class="math inline">\(k\)</span>，坐标不变，即： <span
+class="math display">\[
 ^i\tilde {\mathbf{r}}_{P, ^iO} = k ^i\tilde {\mathbf{r}}_{P, ^iO}
-\]</span> 变换矩阵的集合是特殊欧式群（Special Euclidean Group），可以写成<span class="math inline">\(SE(m)\)</span>。</p>
+\]</span> 变换矩阵的集合是特殊欧式群（Special Euclidean
+Group），可以写成<span class="math inline">\(SE(m)\)</span>。</p>
 <p>变换矩阵的逆为： <span class="math display">\[
 ^j\mathbf{T}_i = ^i\mathbf{T}_j^{-1} =
 \left[
 \begin{array}{l}
-^i\mathbf{R}_j^T  &amp; -^i\mathbf{R}_j^T \ ^i {\mathbf{r}}_{^jO, ^iO} \\
+^i\mathbf{R}_j^T  &amp; -^i\mathbf{R}_j^T \ ^i {\mathbf{r}}_{^jO, ^iO}
+\\
 \mathbf{0} &amp; 1 \\
 \end{array}
 \right]
@@ -384,42 +429,65 @@ r_{33} \\
 <p>因为上述方法表示旋转的时候会遇到奇异点的问题，因此我们很多时候使用四元数来表达旋转。</p>
 <h2 id="表示方法">表示方法</h2>
 <p>四元数通常被表示为： <span class="math display">\[
-\mathbf{Q} = \{\eta, \mathbf{\epsilon}\} = \eta + \epsilon_xi + \epsilon_yj+ \epsilon_zk
-\]</span> 其中<span class="math inline">\(\eta \in \mathcal{R}\)</span>为标量，<span class="math inline">\(\epsilon \in \mathcal{R}^3\)</span>为矢量，也被称为一个实部和三个虚部，由以下公式计算： <span class="math display">\[
+\mathbf{Q} = \{\eta, \mathbf{\epsilon}\} = \eta + \epsilon_xi +
+\epsilon_yj+ \epsilon_zk
+\]</span> 其中<span class="math inline">\(\eta \in
+\mathcal{R}\)</span>为标量，<span class="math inline">\(\epsilon \in
+\mathcal{R}^3\)</span>为矢量，也被称为一个实部和三个虚部，由以下公式计算：
+<span class="math display">\[
 \eta = \cos{\frac \theta  2}
 \]</span></p>
 <p><span class="math display">\[
 \epsilon = \sin{\frac \theta  2} \mathbf{r}
 \]</span></p>
 <p>三个虚部之间的关系如下：</p>
-<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220902183132927.png" /></p>
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220902183132927.png" /></p>
 <p>共轭四元数（实部相同，虚部相反）： <span class="math display">\[
 q^\star = \eta - \epsilon_xi - \epsilon_yj - \epsilon_zk
 \]</span> 四元数的逆： <span class="math display">\[
 q^{-1} = \frac{q^\star}{\Vert q \Vert}
 \]</span></p>
 <h2 id="运算方法">运算方法</h2>
-<p>四元数之间的运算比较复杂，直接给下图别人的归纳，符号上实部用下标<span class="math inline">\(w\)</span>表示，虚部的向量用下标<span class="math inline">\(v\)</span>表示且加粗，<span class="math inline">\(p\)</span>和<span class="math inline">\(q\)</span>分别代表两个四元数：</p>
-<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220907095105398.png" /></p>
-<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220907095155252.png" /></p>
-<p>要表达一个点<span class="math inline">\(p\)</span>经过由四元数<span class="math inline">\(q\)</span>表达的旋转后获得了点<span class="math inline">\(p^\prime\)</span>，首先需要将<span class="math inline">\(p\)</span>的坐标用（纯虚）四元数表示： <span class="math display">\[
+<p>四元数之间的运算比较复杂，直接给下图别人的归纳，符号上实部用下标<span
+class="math inline">\(w\)</span>表示，虚部的向量用下标<span
+class="math inline">\(v\)</span>表示且加粗，<span
+class="math inline">\(p\)</span>和<span
+class="math inline">\(q\)</span>分别代表两个四元数：</p>
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220907095105398.png" /></p>
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220907095155252.png" /></p>
+<p>要表达一个点<span class="math inline">\(p\)</span>经过由四元数<span
+class="math inline">\(q\)</span>表达的旋转后获得了点<span
+class="math inline">\(p^\prime\)</span>，首先需要将<span
+class="math inline">\(p\)</span>的坐标用（纯虚）四元数表示： <span
+class="math display">\[
 p = [0, x, y, z]
-\]</span> 之后求<span class="math inline">\(p^\prime\)</span>： <span class="math display">\[
+\]</span> 之后求<span class="math inline">\(p^\prime\)</span>： <span
+class="math display">\[
 p^\prime = qpq^{-1}
 \]</span></p>
 <h2 id="四元数与旋转矩阵之间的转换">四元数与旋转矩阵之间的转换</h2>
 <p>四元数与旋转矩阵之间的转化方式也比较复杂，直接给结论：</p>
 <p>首先是从四元数计算旋转矩阵：</p>
-<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220907095911606.png" /></p>
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220907095911606.png" /></p>
 <p>从旋转矩阵计算四元数：</p>
-<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220907100055246.png" /></p>
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220907100055246.png" /></p>
 <h2 id="四元数的微分方程">四元数的微分方程</h2>
-<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220907101741728.png" /></p>
-<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220907101750873.png" /></p>
-<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220907101804912.png" /></p>
+<p>上面归纳了旋转矩阵的微分，这里给出四元数的微分：</p>
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220907101741728.png" /></p>
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220907101750873.png" /></p>
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220907101804912.png" /></p>
 <h1 id="reference">Reference</h1>
 <ol type="1">
-<li>Advanced Robotic Kinematics and Dynamics (ARKaD) course from IGMR, RWTH Aachen</li>
+<li>Advanced Robotic Kinematics and Dynamics (ARKaD) course from IGMR,
+RWTH Aachen</li>
 <li>视觉SLAM十四讲：从理论到实践</li>
 </ol>
 

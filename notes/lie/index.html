@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha256-xejo6yLi6vGtAjcMIsY8BHdKsLg7QynVlFMzdQgUuy8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"nielass.xyz","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="李群李代数的相关知识在运动学，状态估计，机器人学，优化等领域有很广泛的应用。 这篇笔记是我学习相关知识的笔记，参考资料在Reference中列出。 李群李代数在很多时候对我来说是非常抽象难以理解的，参考资料[1]给了我很大帮助，强烈推荐阅读原文。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="学习笔记：李群李代数（Lie Theory）">
+<meta property="og:url" content="https://nielass.xyz/notes/lie/index.html">
+<meta property="og:site_name" content="The Library">
+<meta property="og:description" content="李群李代数的相关知识在运动学，状态估计，机器人学，优化等领域有很广泛的应用。 这篇笔记是我学习相关知识的笔记，参考资料在Reference中列出。 李群李代数在很多时候对我来说是非常抽象难以理解的，参考资料[1]给了我很大帮助，强烈推荐阅读原文。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-09-22T17:16:03.000Z">
+<meta property="article:modified_time" content="2022-09-22T17:16:03.000Z">
+<meta property="article:author" content="Nielass">
+<meta property="article:tag" content="State Estimation">
+<meta property="article:tag" content="Optimization">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://nielass.xyz/notes/lie/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://nielass.xyz/notes/lie/","path":"notes/lie/","title":"学习笔记：李群李代数（Lie Theory）"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>学习笔记：李群李代数（Lie Theory） | The Library</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">The Library</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home Home fa-fw"></i>Home</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags Tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th Categories fa-fw"></i>Categories</a></li><li class="menu-item menu-item-materials"><a href="/materials/" rel="section"><i class="fa fa-book Materials fa-fw"></i>Materials</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#the-lie-group"><span class="nav-number">1.</span> <span class="nav-text">The Lie Group</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#the-group-actions"><span class="nav-number">1.1.</span> <span class="nav-text">The group actions</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#examples"><span class="nav-number">1.2.</span> <span class="nav-text">Examples</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#unit-complex-number-group-s1"><span class="nav-number">1.2.1.</span> <span class="nav-text">Unit complex number group \(S^1\)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#unit-quaternions-group-s3"><span class="nav-number">1.2.2.</span> <span class="nav-text">Unit quaternions group \(S^3\)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#the-lie-algebra"><span class="nav-number">2.</span> <span class="nav-text">The Lie algebra</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#the-lie-algebra-mathfrak-m"><span class="nav-number">2.1.</span> <span class="nav-text">The Lie algebra \(\mathfrak m\)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cartesian-vector-space-mathbb-rm"><span class="nav-number">2.2.</span> <span class="nav-text">Cartesian vector space \(\mathbb R^m\)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#examples-1"><span class="nav-number">2.3.</span> <span class="nav-text">Examples</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#rotation-group-so3-lie-algebra-mathfrakso3-and-the-vector-space-mathbb-r3"><span class="nav-number">2.3.1.</span> <span class="nav-text">Rotation
+group \(SO(3)\) , Lie algebra \(\mathfrak{so}(3)\) and the vector space
+\(\mathbb R^3\)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#exponential-map-and-logarithmic-map"><span class="nav-number">3.</span> <span class="nav-text">Exponential map and
+logarithmic map</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#summarymappings-between-mathcal-m-and-t_mathcal-e-mathcal-m"><span class="nav-number">3.1.</span> <span class="nav-text">（Summary）Mappings
+between \(\mathcal M\) and \(T_\mathcal E \mathcal M\)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#plus-and-minus-operators"><span class="nav-number">3.2.</span> <span class="nav-text">Plus and minus operators</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#examples-2"><span class="nav-number">3.3.</span> <span class="nav-text">Examples</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#the-exponential-map-of-so3"><span class="nav-number">3.3.1.</span> <span class="nav-text">The exponential map of \(SO(3)\)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#the-unit-quaternions-group-s3-cont."><span class="nav-number">3.3.2.</span> <span class="nav-text">The unit quaternions group
+\(S^3\) （cont.）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#the-adjoint-and-the-adjoint-matrix"><span class="nav-number">4.</span> <span class="nav-text">The Adjoint and the adjoint
+matrix</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#the-adjoint"><span class="nav-number">4.1.</span> <span class="nav-text">The Adjoint</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#the-adjoint-matrix"><span class="nav-number">4.2.</span> <span class="nav-text">The adjoint matrix</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#derivative-on-lie-groups"><span class="nav-number">5.</span> <span class="nav-text">Derivative on Lie groups</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#right-jacobians-on-lie-groups"><span class="nav-number">5.1.</span> <span class="nav-text">Right Jacobians on Lie
+groups</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#left-jacobians-on-lie-groups"><span class="nav-number">5.2.</span> <span class="nav-text">Left Jacobians on Lie groups</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#uncertainty-in-manifolds-and-covariance-propagation"><span class="nav-number">6.</span> <span class="nav-text">Uncertainty
+in manifolds and covariance propagation</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#reference"><span class="nav-number">7.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Nielass</p>
+  <div class="site-description" itemprop="description">I hope you will find what you are looking for here</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://nielass.xyz/notes/lie/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Nielass">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="The Library">
+      <meta itemprop="description" content="I hope you will find what you are looking for here">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="学习笔记：李群李代数（Lie Theory） | The Library">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          学习笔记：李群李代数（Lie Theory）
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-09-22 19:16:03" itemprop="dateCreated datePublished" datetime="2022-09-22T19:16:03+02:00">2022-09-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Math/" itemprop="url" rel="index"><span itemprop="name">Math</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/KinematicsDynamics/" itemprop="url" rel="index"><span itemprop="name">KinematicsDynamics</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>李群李代数的相关知识在运动学，状态估计，机器人学，优化等领域有很广泛的应用。</p>
+<p>这篇笔记是我学习相关知识的笔记，参考资料在Reference中列出。</p>
+<p>李群李代数在很多时候对我来说是非常抽象难以理解的，参考资料[1]给了我很大帮助，强烈推荐阅读原文。</p>
+<span id="more"></span>
+<h1 id="the-lie-group">The Lie Group</h1>
+<p>李群的概念结合了群[2]的概念和光滑流形[3]的概念，一个李群就是一个其元素满足群的公理（axiom）的光滑流形。通常来说，这个流形就像是一个弯曲的，光滑（超）面（surface），如下图。</p>
+<p>在机器人学中，我们可以说我们的状态向量（state
+vector）在光滑流形的面上变化（移动），或者这个流形被状态的约束给定义了。</p>
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220923212907513.png" /></p>
+<p>群（Group）是一个集合<span class="math inline">\(\mathcal
+G\)</span>，加上一个操作，<span
+class="math inline">\(\circ\)</span>，写作<span
+class="math inline">\((\mathcal G, \circ)\)</span>。对于群中的元素<span
+class="math inline">\(\mathcal{X},\mathcal{Y},\mathcal{Z} \in
+\mathcal{G}\)</span>，满足下述群的公理： <span class="math display">\[
+\begin{align}
+\text{Closure : }&amp;\mathcal{X}\circ\mathcal{Y}\in\mathcal{G}\\
+\text{Identity :
+}&amp;\mathcal{E}\circ\mathcal{X}=\mathcal{X}\circ\mathcal{E}=\mathcal{X}\\
+\text{Inverse :
+}&amp;\mathcal{X}\circ\mathcal{X}^{-1}=\mathcal{X}^{-1}\circ\mathcal{X}=\mathcal{E}\\
+\text{Associativity :
+}&amp;(\mathcal{X}\circ\mathcal{Y})\circ\mathcal{Z} =
+\mathcal{X}\circ(\mathcal{Y}\circ\mathcal{Z})
+\end{align}
+\]</span> 上述式子说明了：</p>
+<ol type="1">
+<li>群元素的运算（组合）仍然是群的元素，运算前后的元素都在流形上。</li>
+<li>每个元素的逆也在流形上。</li>
+<li>存在一个单位元<span
+class="math inline">\(\mathcal{E}\)</span>。</li>
+</ol>
+<h2 id="the-group-actions">The group actions</h2>
+<p>给定一个李群<span class="math inline">\(\mathcal
+M\)</span>和一个集合<span class="math inline">\(\mathcal
+V\)</span>，我们定义<span class="math inline">\(\mathcal X \in \mathcal
+M\)</span>在<span class="math inline">\(v\in\mathcal
+V\)</span>上的群作用（The group actions）为<span
+class="math inline">\(\mathcal X \cdot v\)</span>： <span
+class="math display">\[
+\cdot:\mathcal M \times \mathcal V \rightarrow\mathcal V
+\]</span> 群作用满足如下： <span class="math display">\[
+\begin{align}
+\text{Identity : }&amp;\mathcal{E}\cdot v=v\\
+\text{Campatibility : }&amp;(\mathcal{X}\circ\mathcal{Y})\cdot v =
+\mathcal{X}\circ(\mathcal{Y}\cdot v)
+\end{align}
+\]</span> 常见的群作用有向量左乘旋转矩阵或者齐次变换矩阵等。</p>
+<h2 id="examples">Examples</h2>
+<p>这部分举两个例子来补充上述内容。</p>
+<h3 id="unit-complex-number-group-s1">Unit complex number group <span
+class="math inline">\(S^1\)</span></h3>
+<p>在这个例子中，我们的李群的元素是单位复数<span
+class="math inline">\(\mathbf z = \cos \theta + i\sin
+\theta\)</span>。</p>
+<p>流形：我们的约束“长度为1”定义了流形是一个复平面上的单位圆，或者说一维球面<span
+class="math inline">\(\text{1-sphere}\)</span>，因此这个群也叫做<span
+class="math inline">\(S^1\)</span>。单位复数随着时间变化在该流形上变化。</p>
+<p>群：我们的操作是复数乘法，两个单位复数相乘获得一个单位复数。单位元（identity）在这里是<span
+class="math inline">\(1\)</span>。元素的逆是复数<span
+class="math inline">\(\mathbf z\)</span>的共轭复数<span
+class="math inline">\(\mathbf z^\star\)</span>。</p>
+<p>群作用：给定一个向量<span class="math inline">\(\mathbf x = x +
+iy\)</span>，该流形在这个向量上的群作用是将该向量在平面上旋转一个角度<span
+class="math inline">\(\theta\)</span>，通过复数相乘<span
+class="math inline">\(\mathbf x^\prime = \mathbf z \mathbf
+x\)</span>实现。</p>
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220923114849336.png" /></p>
+<h3 id="unit-quaternions-group-s3">Unit quaternions group <span
+class="math inline">\(S^3\)</span></h3>
+<p>在这个例子中，我们的李群的元素是单位四元数<span
+class="math inline">\(\mathbf q = \cos \frac\theta2 + \mathbf u\sin
+\frac\theta2\)</span>，其中<span class="math inline">\(\mathbf u =
+iu_x+ju_y+ku_z\)</span>。</p>
+<p>流形：同样地，单位长度约束定义了一个三维球面<span
+class="math inline">\(3-sphere\)</span>，因此也叫做<span
+class="math inline">\(S^3\)</span>，或者说一个四维空间里的流形。单位四元数随着时间变化在该流形上变化。</p>
+<p>群：我们的操作是四元数乘法，两个单位四元数相乘获得一个单位四元数。单位元定义为<span
+class="math inline">\(1\)</span>，元素的逆是共轭单位四元数<span
+class="math inline">\(\mathbf q^\star\)</span>。</p>
+<p>群作用：给定一个向量<span class="math inline">\(\mathbf x = ix + jy +
+kz\)</span>，该流形在这个向量上的群作用是将该向量在三维空间中绕着<span
+class="math inline">\(\mathbf u\)</span>旋转一个角度<span
+class="math inline">\(\theta\)</span>，通过双重四元数相乘实现<span
+class="math inline">\(\mathbf x^\prime = \mathbf q \mathbf x \mathbf
+q^\star\)</span>。</p>
+<p>补充：三维球面不是指三维空间里的球面。给定中心<span
+class="math inline">\((C_0,C_1,C_2,C_3)\)</span>和半径<span
+class="math inline">\(r\)</span>，三维球面上所有点<span
+class="math inline">\((x_0,x_1,x_2,x_3)\)</span>的集合满足： <span
+class="math display">\[
+\displaystyle\sum_{i=0}^3(x_i - C_i)^2 = r^2
+\]</span> 单位三维球面（unit 3-sphere）如果用四元数<span
+class="math inline">\(\mathbb H\)</span>等价表示： <span
+class="math display">\[
+S^3 = \left\{q\in\mathbb H:|q|=1\right\}
+\]</span> <img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220923114913469.png" /></p>
+<h1 id="the-lie-algebra">The Lie algebra</h1>
+<p>给定一个在李群的流形<span class="math inline">\(\mathcal
+M\)</span>上运动的点<span class="math inline">\(\mathcal
+X\)</span>，其运动速度<span class="math inline">\(\mathcal {\dot X} =
+\frac {\partial{\mathcal X}}{\partial t}\)</span>在流形切空间（tangent
+space）上，记作<span class="math inline">\(T_{\mathcal X}\mathcal
+M\)</span>。如图：</p>
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220923212907513.png" /></p>
+<h2 id="the-lie-algebra-mathfrak-m">The Lie algebra <span
+class="math inline">\(\mathfrak m\)</span></h2>
+<p>在单位元（identity）上的切空间<span class="math inline">\(T_{\mathcal
+E}\mathcal M\)</span>被称作<span class="math inline">\(\mathcal
+M\)</span>的李代数，记作<span class="math inline">\(\mathfrak
+m\)</span>。每个李群都有一个对应的李代数。</p>
+<p>李代数具有以下特征：</p>
+<ol type="1">
+<li>李代数是一个向量空间[4]，即可以通过<span
+class="math inline">\(\mathbb
+R^m\)</span>的向量来唯一确定李代数的元素，这里的<span
+class="math inline">\(m\)</span>是<span class="math inline">\(\mathcal
+M\)</span>的自由度。</li>
+<li>李代数的元素通过指数映射（exponential
+map）被转换成李群的元素，相反的操作是对数映射（logarithmic map）</li>
+<li>在<span class="math inline">\(\mathcal
+X\)</span>处的切空间的向量可以通过线性变换转换到在<span
+class="math inline">\(\mathcal
+E\)</span>处的切空间，这个变换称作伴随（adjoint）</li>
+</ol>
+<p>李代数可以被一个切点<span class="math inline">\(\mathcal
+X\)</span>局部定义，并且为<span class="math inline">\(T_{\mathcal
+X}\mathcal M\)</span>建立坐标系，我们可以把李代数的元素记作<span
+class="math inline">\(\mathbf v^\wedge\)</span>或者<span
+class="math inline">\(^{\mathcal X}\mathbf {v^\wedge} \in T_{\mathcal
+X}\mathcal M\)</span>。</p>
+<p>对于乘法群（Multiplicative group）来说，群的操作是乘法，因此有<span
+class="math inline">\(\mathcal X^{-1}\mathcal X =\mathcal
+E\)</span>，这个式子对时间求导得： <span class="math display">\[
+\dot{\mathcal X^{-1}}\mathcal X + \mathcal X^{-1}\dot{\mathcal X}= 0
+\]</span> 这是对在<span class="math inline">\(\mathcal
+X\)</span>处的切空间的元素（李代数的元素）的约束，因此我们可以写： <span
+class="math display">\[
+\mathbf v^\wedge = \dot{\mathcal X^{-1}}\mathcal X =-\mathcal
+X^{-1}\dot{\mathcal X}
+\]</span></p>
+<h2 id="cartesian-vector-space-mathbb-rm">Cartesian vector space <span
+class="math inline">\(\mathbb R^m\)</span></h2>
+<p>通常来说任意一个李代数的元素<span
+class="math inline">\(\boldsymbol{\tau}^\wedge\)</span>都有比较复杂的形式，例如上述的反对称矩阵（skew
+matrics），虚数（imaginary numbers）或者纯四元数（pure
+quaternions）。</p>
+<p>但是这些元素都可以被表达为一些基元素（base element）<span
+class="math inline">\(E_i\)</span>的线性组合，这些基元素被称作李代数<span
+class="math inline">\(\mathfrak
+m\)</span>的generator（这个咋翻译？？）。那么如果能将李代数的元素直接用坐标形式表达就非常方便，这里我们将对应的坐标写作<span
+class="math inline">\(\boldsymbol\tau\)</span>。我们还需要<span
+class="math inline">\(\boldsymbol\tau\)</span>和<span
+class="math inline">\(\boldsymbol{\tau}^\wedge\)</span>之间的转换关系，定义如下：
+<span class="math display">\[
+\begin{array}{c}
+\text{Hat: } &amp; \mathbb R^m\rightarrow\mathfrak m &amp;
+\boldsymbol\tau \mapsto \boldsymbol{\tau}^\wedge =
+\displaystyle\sum_{i=1}^m \tau_iE_i \\
+\text{Vee: } &amp; \mathfrak m\rightarrow\mathbb R^m &amp;
+\boldsymbol{\tau}^\wedge \mapsto (\boldsymbol{\tau}^\wedge)^{\vee}=
+\boldsymbol\tau =\displaystyle\sum_{i=1}^m \tau_i\mathbf{e}_i
+\end{array}
+\]</span> 这里我们通过<span class="math inline">\(Hat\)</span>和<span
+class="math inline">\(Vee\)</span>两种运算来转换上述两个量，式子中的<span
+class="math inline">\(\mathbf e_i\)</span>是<span
+class="math inline">\(\mathbb R^m\)</span>的基向量，并且有<span
+class="math inline">\(\mathbf e_i^\wedge = E_i\)</span>。</p>
+<h2 id="examples-1">Examples</h2>
+<p>我们这里也给个例子补充说明李代数的内容。</p>
+<h3
+id="rotation-group-so3-lie-algebra-mathfrakso3-and-the-vector-space-mathbb-r3">Rotation
+group <span class="math inline">\(SO(3)\)</span> , Lie algebra <span
+class="math inline">\(\mathfrak{so}(3)\)</span> and the vector space
+<span class="math inline">\(\mathbb R^3\)</span></h3>
+<p>在旋转群<span class="math inline">\(SO(3)\)</span>中，我们有<span
+class="math inline">\(3\times3\)</span>的旋转矩阵<span
+class="math inline">\(\mathbf R\)</span>，并且根据其正交性我们有<span
+class="math inline">\(\mathbf R^T\mathbf R = \mathbf
+I\)</span>，对这个约束求导我们可以获得其切空间： <span
+class="math display">\[
+\mathbf R^T\dot{\mathbf R} = -\dot{\mathbf R^T}\mathbf R
+\]</span> 从这里我们可以看出<span class="math inline">\(\mathbf
+R^T\dot{\mathbf
+R}\)</span>其实是一个反对称矩阵。对于反对称矩阵，我们通常写成这个形式<span
+class="math inline">\([\boldsymbol\omega]_\times\)</span>并有如下定义
+<span class="math display">\[
+[\boldsymbol\omega]_\times
+=
+\left[
+\begin{array}{c}
+0 &amp; -\omega_z &amp; \omega_y\\
+\omega_z &amp; 0 &amp; -\omega_x\\
+-\omega_y &amp; \omega_x &amp; 0
+\end{array}
+\right]
+\]</span> 这里我们令<span class="math inline">\(\mathbf R^T\dot{\mathbf
+R}=[\boldsymbol\omega]_\times\)</span>，可以发现当<span
+class="math inline">\(\mathbf R = \mathbf I\)</span>时，我们有 <span
+class="math display">\[
+\dot{\mathbf R}=[\boldsymbol\omega]_\times
+\]</span> 通过上述式子，我们发现<span
+class="math inline">\([\boldsymbol\omega]_\times\)</span>是<span
+class="math inline">\(SO(3)\)</span>的李代数<span
+class="math inline">\(\mathfrak{so}(3)\)</span>。</p>
+<p>因为<span class="math inline">\([\boldsymbol\omega]_\times \in
+\mathfrak{so}(3)\)</span>有三个自由度，因此<span
+class="math inline">\(SO(3)\)</span>的维度（dimension）为<span
+class="math inline">\(m=3\)</span>。正如上文所说李代数是一个向量空间，其元素可以被分解为：
+<span class="math display">\[
+[\boldsymbol\omega]_\times = \omega_x \mathbf{E}_x + \omega_y
+\mathbf{E}_y + \omega_z \mathbf{E}_z
+\]</span> 其中<span class="math inline">\(\mathbf{E}_x =
+\left[\begin{array}{c}0&amp;0&amp;0 \\ 0 &amp; 0 &amp; -1 \\ 0 &amp; 1
+&amp; 0\end{array}\right]\)</span>，<span
+class="math inline">\(\mathbf{E}_y = \left[\begin{array}{c}
+0&amp;0&amp;1 \\ 0 &amp; 0 &amp; 0 \\ -1 &amp; 0 &amp;
+0\end{array}\right]\)</span>，<span class="math inline">\(\mathbf{E}_z =
+\left[\begin{array}{c}0&amp;-1&amp;0 \\ 1 &amp; 0 &amp; 0 \\ 0 &amp; 0
+&amp; 0\end{array}\right]\)</span>是<span
+class="math inline">\(\mathfrak{so}(3)\)</span>的generators。其对应的向量如下表示：
+<span class="math display">\[
+\boldsymbol\omega
+=
+\left[
+\begin{array}{c}\omega_x \\ \omega_y \\ \omega_z
+\end{array}
+\right]
+\in \mathbb R^3
+\]</span> 通过<span
+class="math inline">\(\boldsymbol\omega\)</span>我们可以唯一确定<span
+class="math inline">\([\boldsymbol\omega]_\times\)</span>。通过<span
+class="math inline">\(Hat\)</span>和<span
+class="math inline">\(Vee\)</span>两种运算我们可以实现上述几个量的相互转换。</p>
+<h1 id="exponential-map-and-logarithmic-map">Exponential map and
+logarithmic map</h1>
+<p>指数映射（Exponential
+map）将李代数的元素转换成李群的元素。直观来说，指数映射和对数映射就像是李群例子一中的红线与蓝线之间的变换，从红线到蓝线的变换是指数运算，反之是对数运算：</p>
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220925145841762.png" /></p>
+<p>观察<a href="#The%20Lie%20algebra">The Lie algebra <span
+class="math inline">\(\mathfrak
+m\)</span></a>这一节中的式子，我们可以得到： <span
+class="math display">\[
+\dot{\mathcal X} = \mathcal X\mathbf v^\wedge
+\]</span> 这是一个常微分方程，其解为： <span class="math display">\[
+\mathcal X(t) = \mathcal X(0)\exp(\mathbf v^\wedge t)
+\]</span> 那么因为<span class="math inline">\(\mathcal
+X(t)\)</span>和<span class="math inline">\(\mathcal
+X(0)\)</span>都是群的元素，<span class="math inline">\(\exp(\mathbf
+v^\wedge t)=\mathcal X(0)^{-1}\mathcal
+X(t)\)</span>也会是群的元素。由此我们可以发现，指数运算将一个李代数的元素<span
+class="math inline">\(\mathbf v^\wedge t\)</span>变为了李群的元素。</p>
+<p>换个符号，令上述的切向的增量（tangent increment）<span
+class="math inline">\(\mathbf v^\wedge t=\boldsymbol
+\tau^\wedge\)</span>，得： <span class="math display">\[
+\begin{array}{c}
+\text{exp: } &amp; \mathfrak m\rightarrow\mathcal M &amp;
+\boldsymbol{\tau}^\wedge \mapsto \mathcal
+X=\exp(\boldsymbol{\tau}^\wedge) \\
+\text{log: } &amp; \mathcal M\rightarrow\mathfrak m &amp; \mathcal X
+\mapsto  \boldsymbol{\tau}^\wedge = \log(\mathcal X)
+\end{array}
+\]</span> 对于乘法群（Multiplicative
+group）来说，指数运算可以通过泰勒级数计算： <span
+class="math display">\[
+\exp(\boldsymbol{\tau}^\wedge)=\mathcal E+\boldsymbol{\tau}^{\wedge} +
+\frac12\boldsymbol{\tau}^{\wedge 2} +
+\frac1{3!}\boldsymbol{\tau}^{\wedge 3} + ...
+\]</span> 指数映射有一些特点，如下：</p>
+<p><span class="math display">\[
+\begin{align}
+\exp((t+s)\boldsymbol{\tau}^\wedge) &amp;=
+\exp(t\boldsymbol{\tau}^\wedge) \exp(s\boldsymbol{\tau}^\wedge)
+\\
+\exp(t\boldsymbol{\tau}^\wedge) &amp;= \exp(\boldsymbol{\tau}^\wedge)^t
+\\
+\exp(-\boldsymbol{\tau}^\wedge) &amp;=
+\exp(\boldsymbol{\tau}^\wedge)^{-1}
+\\
+\exp(\mathcal X\boldsymbol{\tau}^\wedge\mathcal X^{-1}) &amp;=
+\mathcal X\exp(\boldsymbol{\tau}^\wedge)\mathcal X^{-1}
+\\
+\end{align}
+\]</span></p>
+<p>如果想把上述的向量<span class="math inline">\(\mathbb
+R^m\)</span>直接转换成李群元素，可以用大指数映射（capitalized
+exponential map）： <span class="math display">\[
+\begin{array}{c}
+\text{Exp: } &amp; \mathbb R^m\rightarrow\mathcal M &amp;
+\boldsymbol{\tau} \mapsto \mathcal X=\text{Exp}(\boldsymbol{\tau}) \\
+\text{Log: } &amp; \mathcal M\rightarrow\mathbb R^m &amp; \mathcal X
+\mapsto  \boldsymbol{\tau} = \text{Log}(\mathcal X)
+\end{array}
+\]</span></p>
+<h2
+id="summarymappings-between-mathcal-m-and-t_mathcal-e-mathcal-m">（Summary）Mappings
+between <span class="math inline">\(\mathcal M\)</span> and <span
+class="math inline">\(T_\mathcal E \mathcal M\)</span></h2>
+<p>上述介绍的各种转换可以用下图简单总结：</p>
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220925152504526.png" /></p>
+<h2 id="plus-and-minus-operators">Plus and minus operators</h2>
+<p>我们可以为流形上的元素定义加和减操作，这两个操作引入了两个元素之间的增量，并将这个增量在切空间中表达出来。</p>
+<p>加和减操作需要组合上文介绍的群的操作和指数（对数）映射，并且因为群的操作不可交换（non-commutativity），我们需要定义左加（减）和右加（减）：
+<span class="math display">\[
+\begin{array}{c}
+\text{right-plus: } &amp; \mathcal Y = \mathcal X \oplus^\mathcal
+X\boldsymbol{\tau} \triangleq \mathcal X \circ \text{Exp}(^\mathcal
+X\boldsymbol{\tau}) \in \mathcal M
+\\
+\text{right-minus: } &amp; ^\mathcal X\boldsymbol{\tau}=\mathcal Y
+\ominus \mathcal X\triangleq \text{Log}(\mathcal X^{-1} \circ\mathcal Y)
+\in  T_{\mathcal X}\mathcal M
+\end{array}
+\]</span> 因为<span class="math inline">\(\text{Exp}(^\mathcal
+X\boldsymbol{\tau})\)</span>这个量出现在操作符右侧，因此上述定义是右加（减），并且可以看到<span
+class="math inline">\(^\mathcal X\boldsymbol{\tau}\)</span>属于在<span
+class="math inline">\(\mathcal X\)</span>的切空间，因此习惯上我们说<span
+class="math inline">\(^\mathcal
+X\boldsymbol{\tau}\)</span>是在局部坐标系（local frame）中的。</p>
+<p>左加减的版本定义如下： <span class="math display">\[
+\begin{array}{c}
+\text{left-plus: } &amp; \mathcal Y = ^\mathcal E\boldsymbol{\tau}
+\oplus\mathcal X \triangleq \text{Exp}(^\mathcal
+E\boldsymbol{\tau})\circ\mathcal X   \in \mathcal M
+\\
+\text{left-minus: } &amp; ^\mathcal E\boldsymbol{\tau}=\mathcal Y
+\ominus \mathcal X\triangleq \text{Log}(\mathcal Y \circ\mathcal X^{-1})
+\in  T_{\mathcal E}\mathcal M
+\end{array}
+\]</span> 这里的<span class="math inline">\(^\mathcal
+X\boldsymbol{\tau}\)</span>是表达在全局坐标系下的。</p>
+<p>一般来说，我们用右加减版本。如下图右，来自四元数例子：</p>
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220925182254750.png" /></p>
+<h2 id="examples-2">Examples</h2>
+<p>记录两个例子来补充上述内容，特别是指数映射。</p>
+<h3 id="the-exponential-map-of-so3">The exponential map of <span
+class="math inline">\(SO(3)\)</span></h3>
+<p>从上一章的例子中，我们得到<span class="math inline">\(\dot{\mathbf
+R}=\mathbf R[\boldsymbol\omega]_\times \in T_{\mathbf
+R}SO(3)\)</span>。</p>
+<p>假设旋转角速率是常数，那么我们获得了一个常微分方程，其解为： <span
+class="math display">\[
+\mathbf R(t) = \mathbf R_0\exp([\boldsymbol\omega]_\times t) \in SO(3)
+\]</span> 如果初始旋转矩阵是单位矩阵，并用泰勒级数表示上述式子： <span
+class="math display">\[
+\mathbf R(t) = \exp([\boldsymbol\theta]_\times) = \displaystyle \sum_k
+\frac{\theta^k}{k!}([\mathbf u]_\times )^k
+\]</span> 这里我们定义<span class="math inline">\(\boldsymbol
+\theta\triangleq\mathbf u\theta \triangleq \boldsymbol \omega t \in
+\mathbb R^3\)</span>来表达绕着单位向量<span
+class="math inline">\(\mathbf u\)</span>旋转角度<span
+class="math inline">\(\theta\)</span>，可以看到总旋转的李代数是<span
+class="math inline">\([\boldsymbol\theta]_\times \in
+\mathfrak{so}(3)\)</span>。</p>
+<p>通过展开并整理上个式子，我们可以获得罗德里格斯公式（Rodrigues
+formula）： <span class="math display">\[
+\mathbf R = \exp([\mathbf u \theta]_\times) = \mathbf I + [\mathbf
+u]_\times \sin \theta+ [\mathbf u]_\times^2(1-\cos \theta)
+\]</span> 这样我们就获得了李群<span class="math inline">\(\mathbf R \in
+SO(3)\)</span>和李代数<span class="math inline">\([\mathbf
+u]_\times\in\mathfrak{so}(3)\)</span>之间的转换公式。</p>
+<h3 id="the-unit-quaternions-group-s3-cont.">The unit quaternions group
+<span class="math inline">\(S^3\)</span> （cont.）</h3>
+<p>像其他例子一样，我们也对单位四元数的约束<span
+class="math inline">\(\mathbf q^\star \mathbf q = 1\)</span>进行求导：
+<span class="math display">\[
+\mathbf q^\star \dot{\mathbf q} = -(\mathbf q^\star \dot{\mathbf
+q})^\star
+\]</span> 这里我们可以看出<span class="math inline">\(\mathbf q^\star
+\dot{\mathbf q}\)</span>是一个纯虚四元数，因此我们可以把它写成<span
+class="math inline">\(\mathbf uv\)</span>，其中<span
+class="math inline">\(\mathbf u\)</span>是单位纯虚四元数，而<span
+class="math inline">\(v\)</span>是其Norm。因为四元数是纯虚的，上述等式右侧可以直接被<span
+class="math inline">\(\mathbf
+uv\)</span>替代。上述等式左侧中，利用性质<span
+class="math inline">\(\mathbf q^{-1} = \frac{\mathbf q^\star}{||\mathbf
+q||^2}\)</span>以及单位四元数的长度为<span
+class="math inline">\(1\)</span>，我们可以直接用四元数的逆替换其共轭，整个等式重写成：
+<span class="math display">\[
+\dot{\mathbf q} = \mathbf q \mathbf u v \in T_{\mathbf q}S^3
+\]</span> 和上个例子相似，我们可以求解整个ODE，令<span
+class="math inline">\(\mathbf q_0 = 1\)</span>，以及<span
+class="math inline">\(\boldsymbol\phi\triangleq\mathbf u\phi
+\triangleq\mathbf uvt\)</span>，我们获得对应的指数映射： <span
+class="math display">\[
+\mathbf q = \exp( \mathbf u\phi) =\sum \frac{\phi^k}{k!}\mathbf u^k \in
+S^3
+\]</span> 通过整理右侧求和，我们获得欧拉公式的延伸： <span
+class="math display">\[
+\mathbf q = \exp( \mathbf u\phi) = \cos \phi + \mathbf u\sin\phi
+\]</span> 在这里，李代数的元素<span
+class="math inline">\(\boldsymbol\phi=\mathbf
+u\phi\in\mathfrak{s}^3\)</span>可以通过之前介绍的<span
+class="math inline">\(Hat\)</span>和<span
+class="math inline">\(Vee\)</span>操作直接转换成对应的向量形式<span
+class="math inline">\(\boldsymbol\theta\)</span>： <span
+class="math display">\[
+\begin{array}{c}
+\text{Hat: } &amp; \mathbb R^3\rightarrow\mathfrak{s}^3 &amp;
+\boldsymbol\theta \mapsto \boldsymbol{\theta}^\wedge = 2\boldsymbol\phi
+\\
+\text{Vee: } &amp; \mathfrak{s}^3\rightarrow\mathbb R^3 &amp;
+\boldsymbol{\phi} \mapsto \boldsymbol{\phi}^{\vee} =
+\frac{\boldsymbol\theta} 2
+\end{array}
+\]</span> 这里的两倍关系来源于<span
+class="math inline">\(S^3\)</span>群中定义的群作用，见前面的<span
+class="math inline">\(S^3\)</span>例子。因此我们还有： <span
+class="math display">\[
+\mathbf q = \text{Exp}( \mathbf u\theta) = \cos \frac\theta2 + \mathbf
+u\sin\frac\theta2
+\]</span></p>
+<h1 id="the-adjoint-and-the-adjoint-matrix">The Adjoint and the adjoint
+matrix</h1>
+<p>从<a href="#Plus%20and%20minus%20operators">Plus and minus
+operators</a>中我们定义了两种不一样的加减法，分别用于不同系（frame）下的李代数，从中我们可以发现将在<span
+class="math inline">\(\mathcal
+X\)</span>下的李代数转换到原点（origin）下的李代数的方法。</p>
+<p>令<span class="math inline">\(\text{Exp}(^\mathcal
+E\boldsymbol{\tau})\circ\mathcal X = \text{Exp}(^\mathcal
+E\boldsymbol{\tau})\mathcal X\)</span>，已知<span
+class="math inline">\(\mathcal Y\)</span>的话可得： <span
+class="math display">\[
+\text{Exp}(^\mathcal E\boldsymbol{\tau})\mathcal X = \mathcal
+X\text{Exp}(^\mathcal X\boldsymbol{\tau})
+\]</span> 通过指数映射的特点可得： <span class="math display">\[
+\exp(^\mathcal E\boldsymbol{\tau}^\wedge) = \mathcal X\exp(^\mathcal
+X\boldsymbol{\tau}^\wedge)\mathcal X^{-1} = \exp(\mathcal X^\mathcal
+X\boldsymbol{\tau}^\wedge\mathcal X^{-1})
+\]</span> 那么： <span class="math display">\[
+^\mathcal E\boldsymbol{\tau}^\wedge =\mathcal X^\mathcal
+X\boldsymbol{\tau}^\wedge\mathcal X^{-1}
+\]</span></p>
+<h2 id="the-adjoint">The Adjoint</h2>
+<p>定义流形<span class="math inline">\(\mathcal M\)</span>在<span
+class="math inline">\(\mathcal X\)</span>处的伴随（adjoint）为： <span
+class="math display">\[
+\text{Ad}_\mathcal X: \ \mathfrak m \rightarrow \mathfrak m; \ \
+^\mathcal E\boldsymbol{\tau}^\wedge \mapsto \text{Ad}_\mathcal
+X(^\mathcal X\boldsymbol{\tau}^\wedge) \triangleq \mathcal X^\mathcal
+X\boldsymbol{\tau}^\wedge\mathcal X^{-1}
+\]</span> 其拥有特点： <span class="math display">\[
+\begin{array}{c}
+\text{Linear: } &amp; \text{Ad}_\mathcal
+X(a\boldsymbol{\tau}^\wedge+b\boldsymbol{\sigma}^\wedge) =
+a\text{Ad}_\mathcal X(\boldsymbol{\tau}^\wedge) +b\text{Ad}_\mathcal
+X(\boldsymbol{\sigma}^\wedge)\\
+\text{Homomorphism: } &amp; \text{Ad}_\mathcal X(\text{Ad}_\mathcal
+Y(\boldsymbol{\tau}^\wedge)) = \text{Ad}_\mathcal
+{XY}(\boldsymbol{\tau}^\wedge)
+\end{array}
+\]</span></p>
+<h2 id="the-adjoint-matrix">The adjoint matrix</h2>
+<p>因为伴随操作是线性的，所以我们可以通过矩阵运算来表示两个对应向量的关系，我们把这个矩阵称作伴随矩阵（adjoint
+matrix）： <span class="math display">\[
+\textbf{Ad}_\mathcal X: \ \mathbb R^m \rightarrow \mathbb R^m; \ \
+^\mathcal E\boldsymbol{\tau} \mapsto ^\mathcal X\boldsymbol{\tau} =
+\textbf{Ad}_\mathcal X(^\mathcal X\boldsymbol{\tau})
+\]</span> 其中： <span class="math display">\[
+\textbf{Ad}_\mathcal X(\boldsymbol{\tau}) =(\mathcal X^\mathcal
+X\boldsymbol{\tau}^\wedge\mathcal X^{-1})^{\vee}
+\]</span> 其拥有特点： <span class="math display">\[
+\mathcal X \oplus \boldsymbol{\tau} = (\textbf{Ad}_\mathcal
+X(\boldsymbol{\tau}))\oplus \mathcal X \\
+\textbf{Ad}_\mathcal {X^{-1}} = \textbf{Ad}_\mathcal X^{-1} \\
+\textbf{Ad}_\mathcal {XY} = \textbf{Ad}_\mathcal {X}\textbf{Ad}_\mathcal
+{Y}
+\]</span> 上述式子常用来简化计算，一般来说等式左侧的计算量较少。</p>
+<h1 id="derivative-on-lie-groups">Derivative on Lie groups</h1>
+<p>定义李群的求导的方式有很多，这里我们通过雅各比矩阵（Jacobian
+matrices）的方式来定义和表示李群的求导。</p>
+<p>这章的内容假定读者有向量空间的雅各比矩阵的相关知识，若无，请阅读[1]或相关书籍。</p>
+<h2 id="right-jacobians-on-lie-groups">Right Jacobians on Lie
+groups</h2>
+<p>对于作用在流形上的函数<span class="math inline">\(f:\mathcal M
+\rightarrow \mathcal N\)</span>来说，我们可以用<a
+href="#Plus%20and%20minus%20operators">Plus and minus
+operators</a>中介绍的操作来定义。</p>
+<p>首先使用右加减，我们可以定义一个与标准求导相似的形式，即<span
+class="math inline">\(f\)</span>的右雅各比（right Jacobian of <span
+class="math inline">\(f\)</span>）： <span class="math display">\[
+\begin{align}
+\frac{^\mathcal X D f(\mathcal X)}{D\mathcal X}
+&amp;= \lim_{\boldsymbol \tau \rightarrow0} \frac{f(\mathcal X\oplus
+\boldsymbol \tau)\ominus f(\mathcal X)}{\boldsymbol \tau} \in \mathbb
+R^{n\times m} \\
+&amp;= \frac{\partial \text{ Log}\left(f(\mathcal X)^{-1}\circ
+f(\mathcal X\circ\text{Exp}(\boldsymbol \tau))\right)}{\partial
+\boldsymbol \tau}
+\end{align}
+\]</span>
+因为我们使用右加减，所以上述的各个量都是在局部坐标系中表达的，即在<span
+class="math inline">\(\mathcal X \in \mathcal M\)</span>和<span
+class="math inline">\(f(\mathcal X) \in \mathcal
+N\)</span>的切空间坐标系。所求得的导数（雅各比矩阵）<span
+class="math inline">\(\mathbb R^{m\times
+n}\)</span>映射了局部切空间，即<span class="math inline">\(T_{\mathcal
+X}\mathcal M \rightarrow T_{f(\mathcal X)}\mathcal
+N\)</span>，矩阵中的每一列对应了各个方向的方向导数（directional
+derivatives）。</p>
+<p>上述介绍的内容可以比较直观地从下图中看出：</p>
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220926110006488.png" /></p>
+<p>Note：对于比较小的<span class="math inline">\(\boldsymbol
+\tau\)</span>来说，以下公式可以用： <span class="math display">\[
+f(\mathcal X\oplus \boldsymbol \tau) \displaystyle\xrightarrow[^\mathcal
+X\boldsymbol \tau \rightarrow 0]{}f(\mathcal X)\oplus \frac{^\mathcal X
+D f(\mathcal X)}{D\mathcal X} \ ^\mathcal X\boldsymbol \tau \in \mathcal
+N
+\]</span></p>
+<h2 id="left-jacobians-on-lie-groups">Left Jacobians on Lie groups</h2>
+<p>与上面相似，我们也可以用左加减来定义导数。 <span
+class="math display">\[
+\begin{align}
+\frac{^\mathcal E D f(\mathcal X)}{D\mathcal X}
+&amp;= \lim_{\boldsymbol \tau \rightarrow0} \frac{f(\boldsymbol
+\tau\oplus \mathcal X)\ominus f(\mathcal X)}{\boldsymbol \tau} \in
+\mathbb R^{n\times m} \\
+&amp;= \frac{\partial \text{ Log}\left(f(\text{Exp}(\boldsymbol
+\tau)\circ\mathcal X)\circ f(\mathcal X)^{-1}\right)}{\partial
+\boldsymbol \tau}
+\end{align}
+\]</span> 因为用了左加减，现在我们的量都使用全局坐标系了，即<span
+class="math inline">\(\boldsymbol \tau \in T_{\mathcal E}\mathcal
+M\)</span>且分子的结果在面<span class="math inline">\(T_{\mathcal
+E}\mathcal N\)</span>上。雅各比的映射关系变为对应李代数的映射，即<span
+class="math inline">\(T_{\mathcal E}\mathcal M \rightarrow T_{\mathcal
+E}\mathcal N\)</span>。</p>
+<p>左右雅各比之间关系可以用伴随矩阵来表示： <span
+class="math display">\[
+\frac{^\mathcal E D f(\mathcal X)}{D\mathcal X} \textbf{Ad}_\mathcal X =
+\textbf{Ad}_{f(\mathcal X)}\frac{^\mathcal X D f(\mathcal X)}{D\mathcal
+X}
+\]</span> Note：对于比较小的<span class="math inline">\(\boldsymbol
+\tau\)</span>来说，以下公式可以用： <span class="math display">\[
+f(^\mathcal E\boldsymbol \tau\oplus\mathcal X)
+\displaystyle\xrightarrow[^\mathcal E\boldsymbol \tau \rightarrow
+0]{}\frac{^\mathcal E D f(\mathcal X)}{D\mathcal X} \ ^\mathcal
+E\boldsymbol \tau\oplus  f(\mathcal X)\in \mathcal N
+\]</span>
+下图中的实线部分展示了上述两种雅各比之间的变换关系，虚线部分表示的是Crossed
+right-left Jacobians，用的少，不在这里介绍了。</p>
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220926153032509.png" /></p>
+<h1 id="uncertainty-in-manifolds-and-covariance-propagation">Uncertainty
+in manifolds and covariance propagation</h1>
+<p>todo</p>
+<h1 id="reference">Reference</h1>
+<ol type="1">
+<li>Sola, Joan, Jeremie Deray, and Dinesh Atchuthan. "A micro Lie theory
+for state estimation in robotics." arXiv preprint arXiv:1812.01537
+(2018).</li>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Group_(mathematics)">Group
+wiki</a></li>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Manifold">Manifold
+wiki</a></li>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Vector_space">Vector Space
+wiki</a></li>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Lie_algebra">Lie
+algebra</a></li>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Lie_group">Lie group</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/State-Estimation/" rel="tag"># State Estimation</a>
+              <a href="/tags/Optimization/" rel="tag"># Optimization</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/notes/superglue/" rel="prev" title="论文笔记：SuperGlue: Learning Feature Matching with Graph Neural Networks">
+                  <i class="fa fa-chevron-left"></i> 论文笔记：SuperGlue: Learning Feature Matching with Graph Neural Networks
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Nielass</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

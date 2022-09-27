@@ -27,17 +27,6 @@
 <meta property="og:site_name" content="The Library">
 <meta property="og:description" content="IMU是多传感器融合的核心。 这篇文章是我学习IMU相关知识的笔记，主要包括了：  惯性导航的解算方法 惯性器件的种类 惯性器件的误差与噪声分析 惯性器件的内参误差模型与标定 惯性器件的温补">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220903124910243.png">
-<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220903130332860.png">
-<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220903130348163.png">
-<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220903131000181.png">
-<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220903130945818.png">
-<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220903134102661.png">
-<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220903140517009.png">
-<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220905102132791.png">
-<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220905103510155.png">
-<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220905103801259.png">
-<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220905190947646.png">
 <meta property="article:published_time" content="2022-09-03T06:21:28.000Z">
 <meta property="article:modified_time" content="2022-09-03T06:21:28.000Z">
 <meta property="article:author" content="Nielass">
@@ -45,7 +34,6 @@
 <meta property="article:tag" content="Line Fitting">
 <meta property="article:tag" content="Sensor">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220903124910243.png">
 
 
 <link rel="canonical" href="https://nielass.xyz/notes/imu/">
@@ -134,7 +122,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%83%AF%E6%80%A7%E5%AF%BC%E8%88%AA%E7%9A%84%E8%A7%A3%E7%AE%97%E6%96%B9%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">惯性导航的解算方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%83%AF%E6%80%A7%E5%99%A8%E4%BB%B6%E7%9A%84%E7%A7%8D%E7%B1%BB"><span class="nav-number">2.</span> <span class="nav-text">惯性器件的种类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%83%AF%E6%80%A7%E5%99%A8%E4%BB%B6%E7%9A%84%E8%AF%AF%E5%B7%AE%E4%B8%8E%E5%99%AA%E5%A3%B0%E5%88%86%E6%9E%90"><span class="nav-number">3.</span> <span class="nav-text">惯性器件的误差与噪声分析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%83%AF%E6%80%A7%E5%99%A8%E4%BB%B6%E7%9A%84%E5%86%85%E5%8F%82%E8%AF%AF%E5%B7%AE%E6%A8%A1%E5%9E%8B%E4%B8%8E%E6%A0%87%E5%AE%9A"><span class="nav-number">4.</span> <span class="nav-text">惯性器件的内参误差模型与标定</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%AF%E5%B7%AE%E6%A8%A1%E5%9E%8B"><span class="nav-number">4.1.</span> <span class="nav-text">误差模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E8%BD%AC%E5%8F%B0%E7%9A%84%E6%A0%87%E5%AE%9A"><span class="nav-number">4.2.</span> <span class="nav-text">基于转台的标定</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A0%E9%80%9F%E5%BA%A6%E8%AE%A1"><span class="nav-number">4.2.1.</span> <span class="nav-text">加速度计</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90%E6%B3%95"><span class="nav-number">4.2.1.1.</span> <span class="nav-text">解析法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%80%E5%B0%8F%E4%BA%8C%E4%B9%98%E6%B3%95"><span class="nav-number">4.2.1.2.</span> <span class="nav-text">最小二乘法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%99%80%E8%9E%BA%E4%BB%AA"><span class="nav-number">4.2.2.</span> <span class="nav-text">陀螺仪</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8D%E5%9F%BA%E4%BA%8E%E8%BD%AC%E5%8F%B0%E7%9A%84%E6%A0%87%E5%AE%9A"><span class="nav-number">4.3.</span> <span class="nav-text">不基于转台的标定</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A0%E9%80%9F%E5%BA%A6%E8%AE%A1-1"><span class="nav-number">4.3.1.</span> <span class="nav-text">加速度计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%99%80%E8%9E%BA%E4%BB%AA-1"><span class="nav-number">4.3.2.</span> <span class="nav-text">陀螺仪</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%83%AF%E6%80%A7%E5%99%A8%E4%BB%B6%E7%9A%84%E6%B8%A9%E8%A1%A5"><span class="nav-number">5.</span> <span class="nav-text">惯性器件的温补</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#reference"><span class="nav-number">6.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%83%AF%E6%80%A7%E5%AF%BC%E8%88%AA%E7%9A%84%E8%A7%A3%E7%AE%97%E6%96%B9%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">惯性导航的解算方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A7%BF%E6%80%81%E6%9B%B4%E6%96%B0orientation"><span class="nav-number">1.1.</span> <span class="nav-text">姿态更新（Orientation）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9F%E5%BA%A6%E6%9B%B4%E6%96%B0velocity"><span class="nav-number">1.2.</span> <span class="nav-text">速度更新（Velocity）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%8D%E7%BD%AE%E6%9B%B4%E6%96%B0position"><span class="nav-number">1.3.</span> <span class="nav-text">位置更新（Position）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%83%AF%E6%80%A7%E5%99%A8%E4%BB%B6%E7%9A%84%E7%A7%8D%E7%B1%BB"><span class="nav-number">2.</span> <span class="nav-text">惯性器件的种类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%83%AF%E6%80%A7%E5%99%A8%E4%BB%B6%E7%9A%84%E8%AF%AF%E5%B7%AE%E4%B8%8E%E5%99%AA%E5%A3%B0%E5%88%86%E6%9E%90"><span class="nav-number">3.</span> <span class="nav-text">惯性器件的误差与噪声分析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%83%AF%E6%80%A7%E5%99%A8%E4%BB%B6%E7%9A%84%E5%86%85%E5%8F%82%E8%AF%AF%E5%B7%AE%E6%A8%A1%E5%9E%8B%E4%B8%8E%E6%A0%87%E5%AE%9A"><span class="nav-number">4.</span> <span class="nav-text">惯性器件的内参误差模型与标定</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%AF%E5%B7%AE%E6%A8%A1%E5%9E%8B"><span class="nav-number">4.1.</span> <span class="nav-text">误差模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E8%BD%AC%E5%8F%B0%E7%9A%84%E6%A0%87%E5%AE%9A"><span class="nav-number">4.2.</span> <span class="nav-text">基于转台的标定</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A0%E9%80%9F%E5%BA%A6%E8%AE%A1"><span class="nav-number">4.2.1.</span> <span class="nav-text">加速度计</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90%E6%B3%95"><span class="nav-number">4.2.1.1.</span> <span class="nav-text">解析法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%80%E5%B0%8F%E4%BA%8C%E4%B9%98%E6%B3%95"><span class="nav-number">4.2.1.2.</span> <span class="nav-text">最小二乘法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%99%80%E8%9E%BA%E4%BB%AA"><span class="nav-number">4.2.2.</span> <span class="nav-text">陀螺仪</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8D%E5%9F%BA%E4%BA%8E%E8%BD%AC%E5%8F%B0%E7%9A%84%E6%A0%87%E5%AE%9A"><span class="nav-number">4.3.</span> <span class="nav-text">不基于转台的标定</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A0%E9%80%9F%E5%BA%A6%E8%AE%A1-1"><span class="nav-number">4.3.1.</span> <span class="nav-text">加速度计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%99%80%E8%9E%BA%E4%BB%AA-1"><span class="nav-number">4.3.2.</span> <span class="nav-text">陀螺仪</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%83%AF%E6%80%A7%E5%99%A8%E4%BB%B6%E7%9A%84%E6%B8%A9%E8%A1%A5"><span class="nav-number">5.</span> <span class="nav-text">惯性器件的温补</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#reference"><span class="nav-number">6.</span> <span class="nav-text">Reference</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -147,7 +135,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-count">10</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -158,7 +146,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-count">22</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -268,7 +256,29 @@
 <span id="more"></span>
 <h1 id="惯性导航的解算方法">惯性导航的解算方法</h1>
 <p>解算在这里的含义就是：通过IMU当前测量的角速度和加速度信息，结合上一时刻的导航信息，计算出当前时刻的导航信息，例如姿态，速度，位置等等。</p>
-<p>通过解算，我们可以获得稳定且平滑的导航结果。但是由于误差的存在，解算的时间越长，累计误差就越大，而我们可以通过后续要说的融合的方法来解决这一问题。</p>
+<p>通过解算，我们可以获得稳定且平滑的导航结果。但是由于误差的存在，解算的时间越长，累计误差就越大，而我们可以通过后续要说的融合的方法来解决这一问题，我们在这里首先介绍基本的解算方法。</p>
+<h2 id="姿态更新orientation">姿态更新（Orientation）</h2>
+<p>根据旋转矩阵的微分： <span class="math display">\[
+\dot {^w\mathbf{R}_b} = ^w\mathbf{R}_b \ w^{b\wedge}
+\]</span> 这里<span
+class="math inline">\(^w\mathbf{R}_b\)</span>表示world坐标系<span
+class="math inline">\(w\)</span>到base坐标系<span
+class="math inline">\(b\)</span>的旋转，且<span
+class="math inline">\(w^{b\wedge}\)</span>表示在<span
+class="math inline">\(b\)</span>坐标系下的旋转角速度<span
+class="math inline">\(w^b\)</span>的反对称矩阵（skew matrix）。</p>
+<p>对上述式子进行积分，获得下一时刻旋转矩阵： <span
+class="math display">\[
+^w\mathbf{R}_{b_k} = ^w\mathbf{R}_{b_{k-1}} \ \exp \left(\displaystyle
+\int_{t_{k-1}}^k w^{b\wedge} d\tau \right)
+\]</span> 我们可以把指数部分的积分写成是<span
+class="math inline">\(k-1\)</span>时刻到<span
+class="math inline">\(k\)</span>时刻的相对旋转的对应旋转向量<span
+class="math inline">\(\mathbf n\)</span>构成的反对称矩阵，因此</p>
+<p>todo</p>
+<h2 id="速度更新velocity">速度更新（Velocity）</h2>
+<p>todo</p>
+<h2 id="位置更新position">位置更新（Position）</h2>
 <p>todo</p>
 <h1 id="惯性器件的种类">惯性器件的种类</h1>
 <p>惯性器件主要可以被分为两种，测量角速度的陀螺仪（gyroscope）和测量加速度的加速度计。</p>
@@ -278,33 +288,41 @@
 <p>主要就是利用陀螺的定轴性和进动性（precession）来测量角速度。</p></li>
 <li><p>激光陀螺和光纤陀螺</p>
 <p>主要是利用在旋转过程中导致的两束光光程不相等，从而引起干涉条纹变化来测量角速度，也就是Sagnac效应。</p>
-<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220903124910243.png" /></p></li>
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220903124910243.png" /></p></li>
 <li><p>MEMS陀螺</p>
 <p>主要是利用科里奥利力来测量角速度。</p></li>
 </ol>
 <p>加速度计就比较简单了。当运载体相对惯性空间做加速度运动时，仪表壳体也随之做相对运动，质量块保持惯性，朝着与加速度方向相反的方向产生位移（拉伸或压缩弹簧）。当位移量达到一定值时，弹簧给出的力使质量块以同一加速度相对惯性空间做加速运动，加速度的大小与方向影响质量块相对位移的方向及拉伸量。</p>
 <h1 id="惯性器件的误差与噪声分析">惯性器件的误差与噪声分析</h1>
 <p>这部分涉及到信号处理相关的知识，我不太熟悉，因此直接贴上任乾大佬的归纳。</p>
-<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220903130332860.png" /></p>
-<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220903130348163.png" /></p>
-<p>为了分析上述这几种误差，我们可以使用Allan方差分析。做法就是，首先按照一定间隔（周期）<span class="math inline">\(T\)</span>采集数据，用这些数据我们可以计算数据的方差，那么就可以画出周期于方差之间的关系图（一般是双对数图），如下：</p>
-<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220903131000181.png" /></p>
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220903130332860.png" /></p>
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220903130348163.png" /></p>
+<p>为了分析上述这几种误差，我们可以使用Allan方差分析。做法就是，首先按照一定间隔（周期）<span
+class="math inline">\(T\)</span>采集数据，用这些数据我们可以计算数据的方差，那么就可以画出周期于方差之间的关系图（一般是双对数图），如下：</p>
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220903131000181.png" /></p>
 <p>之后根据公式：</p>
-<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220903130945818.png" /></p>
-<p>找出曲线与<span class="math inline">\(\tau = 1\)</span>的交点，此时<span class="math inline">\(\log_{10} \tau=0\)</span>，可以求得每个误差的值。</p>
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220903130945818.png" /></p>
+<p>找出曲线与<span class="math inline">\(\tau =
+1\)</span>的交点，此时<span class="math inline">\(\log_{10}
+\tau=0\)</span>，可以求得每个误差的值。</p>
 <h1 id="惯性器件的内参误差模型与标定">惯性器件的内参误差模型与标定</h1>
 <p>在考虑惯性器件的内参误差模型的时候，我们主要考虑下面几个误差：</p>
 <ol type="1">
 <li><p>零偏（bias）</p>
 <p>器件的输入输出之间的常量偏差。</p>
 <p>加速度计的零偏表示为 <span class="math display">\[
-b_a = 
+b_a =
 \left[\begin{array}{c}
 b_{ax} &amp;b_{ay}&amp;b_{az}
 \end{array}\right]
 \]</span></p>
 <p>陀螺仪的零偏表示为 <span class="math display">\[
-b_g = 
+b_g =
 \left[\begin{array}{c}
 b_{gx} &amp;b_{gy}&amp;b_{gz}
 \end{array}\right]
@@ -315,14 +333,14 @@ b_{gx} &amp;b_{gy}&amp;b_{gz}
 <p>器件的输出往往为脉冲值或模数转换得到的值，需要乘以一个刻度系数才能转换成角速度或加速度值，若该系数不准，便存在刻度系数误差。</p>
 </blockquote>
 <p>加速度计的标度因数表示为 <span class="math display">\[
-K_a = 
+K_a =
 \left[ \begin{array}{c}
 K_{ax} &amp; &amp; \\
 &amp; K_{ay} &amp; \\
 &amp; &amp; K_{az}
 \end{array}\right]
 \]</span> 陀螺仪的标度因数表示为 <span class="math display">\[
-K_g = 
+K_g =
 \left[ \begin{array}{c}
 K_{gx} &amp; &amp; \\
 &amp; K_{gy} &amp; \\
@@ -330,43 +348,53 @@ K_{gx} &amp; &amp; \\
 \end{array}\right]
 \]</span></p></li>
 <li><p>安装误差</p>
-<p>当我们传感器的三个轴不是正交的时候，我们就会产生这个误差。举个例子就是，若<span class="math inline">\(z\)</span>轴和<span class="math inline">\(x\)</span>轴之间夹角不是直角，当我们沿着<span class="math inline">\(z\)</span>轴加速时，在<span class="math inline">\(x\)</span>轴上也会有加速度的分量。</p>
-<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220903134102661.png" /></p>
+<p>当我们传感器的三个轴不是正交的时候，我们就会产生这个误差。举个例子就是，若<span
+class="math inline">\(z\)</span>轴和<span
+class="math inline">\(x\)</span>轴之间夹角不是直角，当我们沿着<span
+class="math inline">\(z\)</span>轴加速时，在<span
+class="math inline">\(x\)</span>轴上也会有加速度的分量。</p>
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220903134102661.png" /></p>
 <p>加速度计的安装误差表示为： <span class="math display">\[
-S_a = 
+S_a =
 \left[ \begin{array}{c}
 0 &amp; S_{axy} &amp; S_{axz} \\
 S_{ayx} &amp; 0 &amp; S_{ayz} \\
-S_{azx} &amp; S_{azy} &amp; 0 
+S_{azx} &amp; S_{azy} &amp; 0
 \end{array}\right]
 \]</span></p>
 <p>陀螺仪的安装误差表示为： <span class="math display">\[
-S_g = 
+S_g =
 \left[ \begin{array}{c}
 0 &amp; S_{gxy} &amp; S_{gxz} \\
 S_{gyx} &amp; 0 &amp; S_{gyz} \\
-S_{gzx} &amp; S_{gzy} &amp; 0 
+S_{gzx} &amp; S_{gzy} &amp; 0
 \end{array}\right]
 \]</span></p></li>
 </ol>
 <h2 id="误差模型">误差模型</h2>
-<p>结合上文所提的三个误差，我们可以建立起一个器件输入输出关系（模型）： <span class="math display">\[
+<p>结合上文所提的三个误差，我们可以建立起一个器件输入输出关系（模型）：
+<span class="math display">\[
 W = K_g(I + S_g)\omega + b_g \approx (K_g + S_g)\omega + b_g
-\]</span> 因为这里我们假设安装误差非常小，因此可以近似地做这样的估计。将上述式子展开可得：</p>
-<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220903140517009.png" /></p>
+\]</span>
+因为这里我们假设安装误差非常小，因此可以近似地做这样的估计。将上述式子展开可得：</p>
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220903140517009.png" /></p>
 <p>从上述的模型中可以看出，我们一共有12个参数需要确定。那么12个未知量我们只需要12个方程就能求解出结果，即我们需要12组输入输出。</p>
 <h2 id="基于转台的标定">基于转台的标定</h2>
-<p>基于转台的方法要求我们拥有高精度的转台，我们将待测的器件放到转台上，转台的姿态会被调整到设定的姿态，（以加速度计为例子）结合重力加速度<span class="math inline">\(g\)</span>，我们可以计算出器件当前的真实加速度，即我们知道器件的输入（真实加速度或角速度），再通过读取器件的输出，我们就能获得所需的输入输出对来计算上述模型的未知量。</p>
+<p>基于转台的方法要求我们拥有高精度的转台，我们将待测的器件放到转台上，转台的姿态会被调整到设定的姿态，（以加速度计为例子）结合重力加速度<span
+class="math inline">\(g\)</span>，我们可以计算出器件当前的真实加速度，即我们知道器件的输入（真实加速度或角速度），再通过读取器件的输出，我们就能获得所需的输入输出对来计算上述模型的未知量。</p>
 <p>通过不断改变转台的角度（姿态），我们就能获得不同的输入输出对用于标定。</p>
 <h3 id="加速度计">加速度计</h3>
 <h4 id="解析法">解析法</h4>
 <p>因为我们只需要12组输入输出就可以求出全部未知量。</p>
-<p>举个例子，当转台和IMU是向上放置的时候，器件所受加速度为 <span class="math display">\[
+<p>举个例子，当转台和IMU是向上放置的时候，器件所受加速度为 <span
+class="math display">\[
 a = \left[\begin{array}{c}
 0 \\ 0 \\ g
 \end{array}\right]
 \]</span> 代入上述模型，可得： <span class="math display">\[
-\left\{ 
+\left\{
 \begin{array}{l}
 A_x &amp;= S_{axz} * g + b_{ax} \\
 A_y &amp;= S_{ayz} * g + b_{ay} \\
@@ -374,7 +402,7 @@ A_z &amp;= K_{az} * g + b_{az}
 \end{array}
 \right.
 \]</span> 当向下放置的时候，可得： <span class="math display">\[
-\left\{ 
+\left\{
 \begin{array}{l}
 A_x &amp;= -S_{axz} * g + b_{ax} \\
 A_y &amp;= -S_{ayz} * g + b_{ay} \\
@@ -384,7 +412,9 @@ A_z &amp;= -K_{az} * g + b_{az}
 \]</span> 那么联立这六个方程，就可以求出六个参数。其他参数同理。</p>
 <h4 id="最小二乘法">最小二乘法</h4>
 <p>另一种方式是利用最小二乘来求解参数。</p>
-<p>为了使用这个方法，我们首先需要把上述模型变成<span class="math inline">\(y = x\theta\)</span>的形式，即： <span class="math display">\[
+<p>为了使用这个方法，我们首先需要把上述模型变成<span
+class="math inline">\(y = x\theta\)</span>的形式，即： <span
+class="math display">\[
 \left[
 \begin{array}{c}
 A_x \\
@@ -416,69 +446,108 @@ x = \left[F \ \ I_{3\times3} \right]\\
 F =
 \left[
 \begin{array}{c}
-a_x &amp; 0 &amp; 0 &amp; a_y &amp; a_z &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
-0 &amp; a_y &amp; 0 &amp; 0 &amp; 0 &amp; a_x &amp; a_z &amp; 0 &amp; 0 \\
+a_x &amp; 0 &amp; 0 &amp; a_y &amp; a_z &amp; 0 &amp; 0 &amp; 0 &amp; 0
+\\
+0 &amp; a_y &amp; 0 &amp; 0 &amp; 0 &amp; a_x &amp; a_z &amp; 0 &amp; 0
+\\
 0 &amp; 0 &amp; a_z &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; a_x &amp; a_y
 \end{array}
 \right]
-\]</span> 通过收集若干数据点对<span class="math inline">\(y_i\)</span>和<span class="math inline">\(x_i\)</span>，我们可以构造大矩阵<span class="math inline">\(Y = [y_0^T \ \ y_1^T \ \ ... \ \ y_n^T]^T\)</span>和<span class="math inline">\(X = [x_0^T \ \ x_1^T \ \ ... \ \ x_n^T]^T\)</span>，以及方程<span class="math inline">\(Y = X\theta\)</span>。</p>
-<p>这个方程的最小二乘问题的解析解为<span class="math inline">\(\theta = (X^TX)^{-1}X^TY\)</span>。</p>
+\]</span> 通过收集若干数据点对<span
+class="math inline">\(y_i\)</span>和<span
+class="math inline">\(x_i\)</span>，我们可以构造大矩阵<span
+class="math inline">\(Y = [y_0^T \ \ y_1^T \ \ ... \ \
+y_n^T]^T\)</span>和<span class="math inline">\(X = [x_0^T \ \ x_1^T \ \
+... \ \ x_n^T]^T\)</span>，以及方程<span class="math inline">\(Y =
+X\theta\)</span>。</p>
+<p>这个方程的最小二乘问题的解析解为<span class="math inline">\(\theta =
+(X^TX)^{-1}X^TY\)</span>。</p>
 <h3 id="陀螺仪">陀螺仪</h3>
 <p>转台标定陀螺仪的方法有些不同，因为转台的角速度精度没有角度精度高。简单说即转台的角度可以保持在45度左右，但是花1秒时间从0度转到45度的这个速度并不是一直保持45度每秒。</p>
-<p>但是因为旋转时间已知，我们可以通过上述角速度输入输出模型，对角速度积分获得我们需要的等式，比如绕<span class="math inline">\(z\)</span>轴逆时针旋转后积分得： <span class="math display">\[
-\left\{ 
+<p>但是因为旋转时间已知，我们可以通过上述角速度输入输出模型，对角速度积分获得我们需要的等式，比如绕<span
+class="math inline">\(z\)</span>轴逆时针旋转后积分得： <span
+class="math display">\[
+\left\{
 \begin{array}{l}
 \theta_{Wx} &amp;= S_{axz} * \theta_x + \theta_{b_{gx}} \\
 \theta_{Wy} &amp;= S_{ayz} * \theta_y + \theta_{b_{gy}} \\
 \theta_{Wz} &amp;= K_{az} * \theta_z + \theta_{b_{gz}}
 \end{array}
 \right.
-\]</span> 同样通过改变旋转轴，我们可以获得若干等式用于求解参数。需要注意的是，我们在这里求解Bias，因为旋转所需的时间较短，角速度零偏造成的角度偏差太小。</p>
+\]</span>
+同样通过改变旋转轴，我们可以获得若干等式用于求解参数。需要注意的是，我们在这里求解Bias，因为旋转所需的时间较短，角速度零偏造成的角度偏差太小。</p>
 <p>测量零偏我们可以直接静置转台和器件，这时我们可以认定陀螺仪的输出只有零偏。通过采集数据求平均，我们可以获得所需零偏。</p>
 <p>任乾大佬在这里强调了</p>
 <blockquote>
 <ol type="1">
-<li>有时标定需要考虑地球自转角速度的影响，此时模型比较复杂，可自行参考《惯性仪器测试与数据分析》第 10 章。</li>
-<li>mems 陀螺仪的零偏重复性极差，因此每次上电都要在线估计零偏，因此离线标定时，零偏标与不标区别不大。</li>
+<li>有时标定需要考虑地球自转角速度的影响，此时模型比较复杂，可自行参考《惯性仪器测试与数据分析》第
+10 章。</li>
+<li>mems
+陀螺仪的零偏重复性极差，因此每次上电都要在线估计零偏，因此离线标定时，零偏标与不标区别不大。</li>
 </ol>
 </blockquote>
 <h2 id="不基于转台的标定">不基于转台的标定</h2>
 <p>因为转台属于额外的器件，增加了标定的门槛，因此有时候我们希望没有转台也能做标定。</p>
 <p>不需要转台的标定思路是，因为已知重力加速度，通过已知量和测量值（输出）构建残差，通过优化的方法来计算参数。整体流程图如下：</p>
-<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220905102132791.png" /></p>
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220905102132791.png" /></p>
 <h3 id="加速度计-1">加速度计</h3>
 <p>对于加速度计，在上述模型中，IMU坐标系是固定在转台上的，无法改变，与实际的（有安装偏差的）的坐标系不重合，因此我们需要计算六个参数。</p>
-<p>在这里，因为我们没有转台，我们可以将上述两个坐标系的<span class="math inline">\(x\)</span>轴定义重合，且二者<span class="math inline">\(XOY\)</span>平面也重合，这样就只有3个参数了，即：</p>
-<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220905103510155.png" /></p>
+<p>在这里，因为我们没有转台，我们可以将上述两个坐标系的<span
+class="math inline">\(x\)</span>轴定义重合，且二者<span
+class="math inline">\(XOY\)</span>平面也重合，这样就只有3个参数了，即：</p>
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220905103510155.png" /></p>
 <p>在这个模型下，我们的误差矩阵变成：</p>
-<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220905103801259.png" /></p>
-<p>通过上述输入输出模型，我们可以由测量值求出真实值： <span class="math display">\[
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220905103801259.png" /></p>
+<p>通过上述输入输出模型，我们可以由测量值求出真实值： <span
+class="math display">\[
 a = (I + S_a)^{-1}K_a^{-1}(A-b_a)
-\]</span> 当IMU静置时，器件收到的加速度只有重力加速度<span class="math inline">\(g\)</span>，因此我们可以构建残差函数： <span class="math display">\[
+\]</span> 当IMU静置时，器件收到的加速度只有重力加速度<span
+class="math inline">\(g\)</span>，因此我们可以构建残差函数： <span
+class="math display">\[
 f(\theta) = \Vert \mathbf g \Vert^2 - \Vert \mathbf a \Vert^2
 \]</span> 之后通过优化的方法，求得所需参数。</p>
 <h3 id="陀螺仪-1">陀螺仪</h3>
 <p>陀螺仪使用与基于转台方法一样的模型，但是不求解零偏，因此一共有九个参数需要计算。</p>
 <p>陀螺仪的参数在加速度计的参数标定后进行，此时认为加速度计是没有误差的。</p>
-<p>首先，在<span class="math inline">\(k\)</span>时刻，只有重力作用下，测得器件在IMU坐标下的输出为<span class="math inline">\(u_{k}\)</span>： <span class="math display">\[
+<p>首先，在<span
+class="math inline">\(k\)</span>时刻，只有重力作用下，测得器件在IMU坐标下的输出为<span
+class="math inline">\(u_{k}\)</span>： <span class="math display">\[
 \mathbf u_k = ^{b_k}R_w \mathbf{g}
-\]</span> 在<span class="math inline">\(k+1\)</span>时刻，输出为： <span class="math display">\[
+\]</span> 在<span class="math inline">\(k+1\)</span>时刻，输出为： <span
+class="math display">\[
 \mathbf u_{k+1} = ^{b_{k+1}}R_w \mathbf{g}
-\]</span> 基于两个输出，两个不同时刻的相对旋转<span class="math inline">\(^{b_{k+1}}R_{b_{k}}\)</span>可以被计算出来，那么我们就可以从<span class="math inline">\(k\)</span>时刻的输出推测出<span class="math inline">\(k+1\)</span>时刻的输出： <span class="math display">\[
+\]</span> 基于两个输出，两个不同时刻的相对旋转<span
+class="math inline">\(^{b_{k+1}}R_{b_{k}}\)</span>可以被计算出来，那么我们就可以从<span
+class="math inline">\(k\)</span>时刻的输出推测出<span
+class="math inline">\(k+1\)</span>时刻的输出： <span
+class="math display">\[
 \mathbf {\tilde u_{k+1}} = ^{b_{k+1}}R_{b_{k}} \mathbf u_{k}
-\]</span> 基于测量值和推测值，我们就可以构建残差函数用于优化： <span class="math display">\[
+\]</span> 基于测量值和推测值，我们就可以构建残差函数用于优化： <span
+class="math display">\[
 f(\theta) = \mathbf u_{k+1} - \mathbf {\tilde u_{k+1}}
 \]</span></p>
 <h1 id="惯性器件的温补">惯性器件的温补</h1>
-<p>一般来说，和温度相关的变量是温度<span class="math inline">\(T\)</span>和变温率（温度变化的快慢）<span class="math inline">\(\Delta T\)</span>。温补的目的就是要找出器件的Bias和这两个变量之间的关系。</p>
+<p>一般来说，和温度相关的变量是温度<span
+class="math inline">\(T\)</span>和变温率（温度变化的快慢）<span
+class="math inline">\(\Delta
+T\)</span>。温补的目的就是要找出器件的Bias和这两个变量之间的关系。</p>
 <p>常见的模型是：</p>
-<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220905190947646.png" /></p>
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220905190947646.png" /></p>
 <p>一般来说找出模型参数用的是最小二乘法拟合。因为Bias随温度变化的曲线是不规则的，无法用一个简单的曲线模型来拟合，因此有时候我们可以把曲线分成多个区间，每个区间单独拟合一个模型。</p>
 <h1 id="reference">Reference</h1>
 <ol type="1">
-<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/125554723">多传感器融合定位理论基础（三）：惯性器件误差分析</a></li>
-<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/129642638">多传感器融合定位理论基础（四）：IMU内参模型及标定</a></li>
-<li>Tedaldi, David, Alberto Pretto, and Emanuele Menegatti. "A robust and easy to implement method for IMU calibration without external equipments." 2014 IEEE International Conference on Robotics and Automation (ICRA). IEEE, 2014.</li>
+<li><a
+target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/125554723">多传感器融合定位理论基础（三）：惯性器件误差分析</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/129642638">多传感器融合定位理论基础（四）：IMU内参模型及标定</a></li>
+<li>Tedaldi, David, Alberto Pretto, and Emanuele Menegatti. "A robust
+and easy to implement method for IMU calibration without external
+equipments." 2014 IEEE International Conference on Robotics and
+Automation (ICRA). IEEE, 2014.</li>
 <li><a target="_blank" rel="noopener" href="https://github.com/Kyle-ak/imu_tk">无转台标定源码</a></li>
 </ol>
 

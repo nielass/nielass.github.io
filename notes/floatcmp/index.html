@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha256-xejo6yLi6vGtAjcMIsY8BHdKsLg7QynVlFMzdQgUuy8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"nielass.xyz","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="近期遇到了需要在代码中对float型变量进行比较，于是学习了一下外国大佬Bruce Dawson的博客。 这篇笔记是对大佬关于浮点数比较的博客的粗略总结，内容包括了： 1. 为什么对浮点数比较不是一件简单的事情？ 2. 如何做浮点数比较？">
+<meta property="og:type" content="article">
+<meta property="og:title" content="学习笔记：浮点数与浮点数比较">
+<meta property="og:url" content="https://nielass.xyz/notes/floatcmp/index.html">
+<meta property="og:site_name" content="The Library">
+<meta property="og:description" content="近期遇到了需要在代码中对float型变量进行比较，于是学习了一下外国大佬Bruce Dawson的博客。 这篇笔记是对大佬关于浮点数比较的博客的粗略总结，内容包括了： 1. 为什么对浮点数比较不是一件简单的事情？ 2. 如何做浮点数比较？">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-11-08T12:20:53.000Z">
+<meta property="article:modified_time" content="2022-11-08T12:20:53.000Z">
+<meta property="article:author" content="Nielass">
+<meta property="article:tag" content="Floating Point Number">
+<meta property="article:tag" content="C&#x2F;C++">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://nielass.xyz/notes/floatcmp/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://nielass.xyz/notes/floatcmp/","path":"notes/floatcmp/","title":"学习笔记：浮点数与浮点数比较"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>学习笔记：浮点数与浮点数比较 | The Library</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">The Library</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home Home fa-fw"></i>Home</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags Tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th Categories fa-fw"></i>Categories</a></li><li class="menu-item menu-item-materials"><a href="/materials/" rel="section"><i class="fa fa-book Materials fa-fw"></i>Materials</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#hardwares-and-softwares"><span class="nav-number">1.</span> <span class="nav-text">Hardwares and Softwares</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#floating-point-number"><span class="nav-number">2.</span> <span class="nav-text">Floating Point Number</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#epsilon-comparisons"><span class="nav-number">3.</span> <span class="nav-text">Epsilon Comparisons</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#relative-epsilon-comparisons"><span class="nav-number">3.1.</span> <span class="nav-text">Relative epsilon comparisons</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#comparison-with-ulp"><span class="nav-number">3.2.</span> <span class="nav-text">Comparison With ULP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#advice-and-heuristics"><span class="nav-number">3.3.</span> <span class="nav-text">Advice and Heuristics</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#sinfloatpi-calculates-the-error"><span class="nav-number">4.</span> <span class="nav-text">Sin(float(PI)) calculates the
+error</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#test-code"><span class="nav-number">5.</span> <span class="nav-text">Test code</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#floating-point-number-code"><span class="nav-number">5.1.</span> <span class="nav-text">Floating Point Number Code</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sin-test-code"><span class="nav-number">5.2.</span> <span class="nav-text">Sin() Test Code</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#reference"><span class="nav-number">6.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Nielass</p>
+  <div class="site-description" itemprop="description">I hope you will find what you are looking for here</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://nielass.xyz/notes/floatcmp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Nielass">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="The Library">
+      <meta itemprop="description" content="I hope you will find what you are looking for here">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="学习笔记：浮点数与浮点数比较 | The Library">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          学习笔记：浮点数与浮点数比较
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-11-08 13:20:53" itemprop="dateCreated datePublished" datetime="2022-11-08T13:20:53+01:00">2022-11-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/ComputerScience/" itemprop="url" rel="index"><span itemprop="name">ComputerScience</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>近期遇到了需要在代码中对float型变量进行比较，于是学习了一下外国大佬Bruce
+Dawson的博客。</p>
+<p>这篇笔记是对大佬关于浮点数比较的博客的粗略总结，内容包括了： 1.
+为什么对浮点数比较不是一件简单的事情？ 2. 如何做浮点数比较？</p>
+<span id="more"></span>
+<h1 id="hardwares-and-softwares">Hardwares and Softwares</h1>
+<p>浮点数的运算结果与所使用的编译器及相关设定，CPU等有关。在这篇文章里，我使用如下环境：
+- 11th Gen Intel(R) Core(TM) i5-11600 @ 2.80GHz - gcc version 12.2.0
+(GCC)</p>
+<h1 id="floating-point-number">Floating Point Number</h1>
+<p>在C++中，例如0.1的小数并不能被精确的表示出来，一般来说我们会使用double(0.1)和float(0.1)来表示我们需要的0.1。对于一般的float而言，我们用32位比特来表示一个浮点数，其中包含了1个符号位（sign
+field），8个指（幂）数位（exponent field）以及23个尾数位（mantissa
+field）。</p>
+<p>浮点数的计算规则如下，其中除法运算代表位的右移（即移到小数位置）：</p>
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20221108201605662.png" /></p>
+<p>这种做法给我们带来了很多误差，即在计算机中的0.1与真实的0.1之间的存在误差。</p>
+<p>在我的环境中使用<a
+href="#Floating%20Point%20Number%20Code">测试代码</a>，我们可以得到如下结果：</p>
+<table>
+<thead>
+<tr class="header">
+<th>Number</th>
+<th>Vaule</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0.1</td>
+<td>0.1</td>
+</tr>
+<tr class="even">
+<td>float(0.1)</td>
+<td>0.10000000149011611938476562500000000</td>
+</tr>
+<tr class="odd">
+<td>double(0.1)</td>
+<td>0.10000000000000000555111512312578270</td>
+</tr>
+</tbody>
+</table>
+<p>考虑到double使用的二进制位较多，因此double(0.1)也拥有较高的精度。</p>
+<p>当我们使用浮点数计算的时候，浮点数本身的误差可能会被放大，并且不同的计算方式带来的误差也是不一样的，同样使用<a
+href="#Floating%20Point%20Number%20Code">测试代码</a>：</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 49%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Computation</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0.1 * 10</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>float(0.1) * 10</td>
+<td>1.00000000000000000000000000000000000</td>
+</tr>
+<tr class="odd">
+<td>double(0.1) * 10</td>
+<td>1.00000000000000000000000000000000000</td>
+</tr>
+<tr class="even">
+<td>double(0.1)+double(0.1)+..+double(0.1)</td>
+<td>0.99999999999999988897769753748434596</td>
+</tr>
+<tr class="odd">
+<td>float(0.1)+float(0.1)+..+float(0.1)</td>
+<td>1.00000011920928955078125000000000000</td>
+</tr>
+<tr class="even">
+<td>float(0.1) * double(10)</td>
+<td>1.00000001490116119384765625000000000</td>
+</tr>
+</tbody>
+</table>
+<p>正常来说，0.1×10的答案是1.0。然而，在我们的实现中，可以看出：</p>
+<ol type="1">
+<li>float(0.1)并不等于0.1，然而float(0.1)×10却给出了0.1×10的“错误”答案。同时，如果使用求和的方式，对float(0.1)进行10次累加，我们又能获得一个不一样的答案。这个现象也出现在了double(0.1)上。</li>
+<li>另一个有趣的发现是，如果计算的是float(0.1)×double(10)的话，我们能够获得float(0.1)×10的“正确”答案，但此时这个结果会被存放在一个double里而不是float里。</li>
+</ol>
+<p>这些由于浮点数引起的误差给我们带来了麻烦，很多时候我们希望知道浮点数是不是相等的，比如机器人是否到达或者接近目标速度等等。</p>
+<h1 id="epsilon-comparisons">Epsilon Comparisons</h1>
+<p>一个解决浮点数比较的方法是，定义一个值<span
+class="math inline">\(\epsilon\)</span>，如果两个浮点数的差的绝对值小于这个数，那么我们认为这两个浮点数相等。</p>
+<p>一个问题在于，我们如何找出我们需要的这个<span
+class="math inline">\(\epsilon\)</span>呢？从上述介绍中，我们可以获得float(1.0)和真实1.0之间的差，这个差就可以被做我们的<span
+class="math inline">\(\epsilon\)</span>，在头文件float.h中，这个值被定义为FLT_EPSILON。</p>
+<p>然而，这个方法有时不是一个好的选择。</p>
+<p>对于float而言，两个float值之间的差，与两个float所在的区间有关。对于在1.0和2.0之间的浮点数而言，两个相邻浮点数的差为FLT_EPSILON，然而对于小于1.0的浮点数而言，这个差小于FLT_EPSILON，对于大于2.0的浮点数，这个差又大于FLT_EPSILON。</p>
+<h2 id="relative-epsilon-comparisons">Relative epsilon comparisons</h2>
+<p>为了解决上述问题，一个朴素的方法就是让<span
+class="math inline">\(\epsilon\)</span>随着比较的范围的变化而变化。</p>
+<p>一个例子：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">relativeEpsComp</span><span class="params">(<span class="type">const</span> <span class="type">float</span> v1, <span class="type">const</span> <span class="type">float</span> v2,</span></span></span><br><span class="line"><span class="params"><span class="function">                     <span class="type">const</span> <span class="type">float</span> max_rel_diff = FLT_EPSILON)</span> </span>&#123;</span><br><span class="line">    <span class="type">float</span> diff = <span class="built_in">fabs</span>(v1 - v2);</span><br><span class="line">    <span class="type">float</span> larger = <span class="built_in">fabs</span>(v1) &gt; <span class="built_in">fabs</span>(v2) ? <span class="built_in">fabs</span>(v1) : <span class="built_in">fabs</span>(v2);</span><br><span class="line">    <span class="keyword">if</span> (diff &lt;= larger * max_rel_diff) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然而，如何选择<span
+class="math inline">\(max\_rel\_diff\)</span>却依然是一个难题。</p>
+<h2 id="comparison-with-ulp">Comparison With ULP</h2>
+<p>因为float和int(uint)一般都是32位表示，那么对于一个浮点数而言，其拥有一个对应的整数表示（Integer
+representation）。</p>
+<p>例如小数0.2，其Exponent field为124，Mantissa
+field为0x4CCCCD，其对应浮点数的十六进制为0x3E4CCCCD，这个数也可以被解释为整数1045220557。</p>
+<p>并且浮点数的一个特点在于，相邻且同符号的浮点数的整数表示也是相邻的，即我可以通过对整数进行加减1来获得相邻的浮点数，并且通过比较两个浮点数的整数表示，我们可以轻松知道这两个浮点数的“距离”，见<a
+target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Unit_in_the_last_place">Unit in the
+last place (ULP)</a>。</p>
+<p>这个性质可以被用于比较两个浮点数，即我计算两个浮点数之间的ULP，如果结果大于我设定的阈值，那么二者不相等，反之两个浮点数相等。一般来说，使用ULP比较浮点数是一个很不错的方法。</p>
+<p>这个方法的缺点在于，难以比较符号不同的两个浮点数。</p>
+<p>举个例子，1e-30是一个接近0的数，其对应的整数表示（integer
+representation）为228,737,632，同时-1e-30也是一个接近0和1e-30的数，然而-1e-30的对应整数表示为-1,918,746,016。在大佬的例子代码中，也对被比较的两个浮点数进行了符号检查。</p>
+<h2 id="advice-and-heuristics">Advice and Heuristics</h2>
+<p>作者分享了一些简单的规则，用于选择不同的比较方法。</p>
+<ol type="1">
+<li>如果被比较的数需要和零进行比较，那么选择absolute
+epsilon来进行比较。</li>
+<li>如果两个非0的数进行比较，那么选择relative
+epsilon或者基于ULP的方法。</li>
+<li>如果两个任意数进行比较，那么上述各种情况都需要充分考虑。</li>
+</ol>
+<h1 id="sinfloatpi-calculates-the-error">Sin(float(PI)) calculates the
+error</h1>
+<p>这是作者分享的一个有趣的点，Sin(float(PI))实际上计算了float(PI)和真实PI之间的误差。</p>
+<p>从数学的角度出发，<span class="math inline">\(\sin(PI - \theta)
+\approx \theta\)</span>，如果<span
+class="math inline">\(\theta\)</span>非常小的话，这个<span
+class="math inline">\(\theta\)</span>在这里就是我们的误差。</p>
+<p>实验结果：</p>
+<table>
+<thead>
+<tr class="header">
+<th>Computation</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>M_PI</td>
+<td>3.14159265358979311599796346854</td>
+</tr>
+<tr class="even">
+<td>float(M_PI)</td>
+<td>3.1415927410125732421875</td>
+</tr>
+<tr class="odd">
+<td>M_PI-float(M_PI)</td>
+<td>-8.74227801261895365314558148384e-08</td>
+</tr>
+<tr class="even">
+<td>sin(float(M_PI))</td>
+<td>-8.74227765734758577309548854828e-08</td>
+</tr>
+</tbody>
+</table>
+<h1 id="test-code">Test code</h1>
+<h2 id="floating-point-number-code">Floating Point Number Code</h2>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iomanip&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="type">double</span> d = <span class="number">0.1</span>;</span><br><span class="line">    <span class="type">float</span> f = <span class="number">0.1f</span>;</span><br><span class="line">    <span class="type">float</span> f_sum, f_prod&#123;f * <span class="number">10</span>&#125;;</span><br><span class="line">    <span class="type">double</span> d_sum, d_prod&#123;d * <span class="number">10</span>&#125;;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; ++i) &#123;</span><br><span class="line">        f_sum += f;</span><br><span class="line">        d_sum += d;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; <span class="built_in">setprecision</span>(<span class="number">35</span>) &lt;&lt; <span class="built_in">setiosflags</span>(ios::fixed);</span><br><span class="line">    cout &lt;&lt; <span class="built_in">setw</span>(<span class="number">25</span>) &lt;&lt; <span class="string">&quot;double(0.1): &quot;</span> &lt;&lt; d &lt;&lt; <span class="string">&quot;\n&quot;</span></span><br><span class="line">         &lt;&lt; <span class="built_in">setw</span>(<span class="number">25</span>) &lt;&lt; <span class="string">&quot;float(0.1): &quot;</span> &lt;&lt; f &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="built_in">setw</span>(<span class="number">25</span>) &lt;&lt; <span class="string">&quot;Float Sum: &quot;</span> &lt;&lt; f_sum &lt;&lt; <span class="string">&quot;\n&quot;</span></span><br><span class="line">         &lt;&lt; <span class="built_in">setw</span>(<span class="number">25</span>) &lt;&lt; <span class="string">&quot;Float Product: &quot;</span> &lt;&lt; f_prod &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="built_in">setw</span>(<span class="number">25</span>) &lt;&lt; <span class="string">&quot;Double Sum: &quot;</span> &lt;&lt; d_sum &lt;&lt; <span class="string">&quot;\n&quot;</span></span><br><span class="line">         &lt;&lt; <span class="built_in">setw</span>(<span class="number">25</span>) &lt;&lt; <span class="string">&quot;Double Product: &quot;</span> &lt;&lt; d_prod &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="built_in">setw</span>(<span class="number">25</span>) &lt;&lt; <span class="string">&quot;Float Double Product: &quot;</span> &lt;&lt; f * <span class="number">10.0</span> &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="sin-test-code">Sin() Test Code</h2>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;float.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;math.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iomanip&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="type">float</span> fpi = M_PIf;</span><br><span class="line"></span><br><span class="line">    cout &lt;&lt; <span class="built_in">setprecision</span>(<span class="number">30</span>);</span><br><span class="line">    cout &lt;&lt; <span class="built_in">setw</span>(<span class="number">35</span>) &lt;&lt; <span class="string">&quot;The value of M_PI is: &quot;</span> &lt;&lt; M_PI &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="built_in">setw</span>(<span class="number">35</span>) &lt;&lt; <span class="string">&quot;The value of fpi is: &quot;</span> &lt;&lt; fpi &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="built_in">setw</span>(<span class="number">35</span>) &lt;&lt; <span class="string">&quot;The diff between M_PI and fpi is: &quot;</span> &lt;&lt; M_PI - fpi</span><br><span class="line">         &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="built_in">setw</span>(<span class="number">35</span>) &lt;&lt; <span class="string">&quot;The value of sin(fpi) is: &quot;</span> &lt;&lt; <span class="built_in">sin</span>(fpi) &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="reference">Reference</h1>
+<ol type="1">
+<li><a
+target="_blank" rel="noopener" href="https://randomascii.wordpress.com/2012/01/23/stupid-float-tricks-2/">Stupid
+Float Tricks</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://randomascii.wordpress.com/2012/01/11/tricks-with-the-floating-point-format/">Tricks
+With the Floating-Point Format</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/">Comparing
+Floating Point Numbers, 2012 Edition</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Floating-Point-Number/" rel="tag"># Floating Point Number</a>
+              <a href="/tags/C-C/" rel="tag"># C/C++</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/notes/nvim-win/" rel="prev" title="Neovim配置笔记--从Linux到Win10">
+                  <i class="fa fa-chevron-left"></i> Neovim配置笔记--从Linux到Win10
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Nielass</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

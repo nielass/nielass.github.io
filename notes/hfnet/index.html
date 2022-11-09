@@ -27,15 +27,6 @@
 <meta property="og:site_name" content="The Library">
 <meta property="og:description" content="这篇文章是学习HF-Net的一些笔记。 该论文介绍了一种两步定位的方法，第一步先通过图像检索的方式找出最优的图像及对应位姿，第二部通过局部特征匹配估计出当前位姿。 论文特点：  在定位数据集上达到SOTA性能 文中所提出的HF-Net可以同时输出关键点，局部描述子，以及全局描述子 在多任务学习用上了知识蒸馏">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220824100406128.png">
-<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220823222256286.png">
-<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220824100519076.png">
-<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220823222056978.png">
-<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220824085601258.png">
-<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220824090357564.png">
-<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220824090855093.png">
-<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220824091810266.png">
-<meta property="og:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220824091753543.png">
 <meta property="article:published_time" content="2022-08-23T10:53:25.000Z">
 <meta property="article:modified_time" content="2022-08-25T22:00:00.000Z">
 <meta property="article:author" content="Nielass">
@@ -47,8 +38,8 @@
 <meta property="article:tag" content="Pose Estimation">
 <meta property="article:tag" content="Structure from Motion (SfM)">
 <meta property="article:tag" content="Point-set registration">
+<meta property="article:tag" content="Thesis">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220824100406128.png">
 
 
 <link rel="canonical" href="https://nielass.xyz/notes/hfnet/">
@@ -150,18 +141,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-count">12</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-count">11</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-count">27</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -289,18 +280,25 @@
 <ol type="1">
 <li><p>Prior retrieval</p>
 <p>算法第一步是针对给定图像(query image)进行粗搜索。</p>
-<p>粗搜索的方法是计算所求的图像的global descriptor，然后用KNN (K-nearest neighbors)找出数据库中的候选图像（关键帧）。描述子的计算方法在网络结构部分介绍。</p>
+<p>粗搜索的方法是计算所求的图像的global descriptor，然后用KNN (K-nearest
+neighbors)找出数据库中的候选图像（关键帧）。描述子的计算方法在网络结构部分介绍。</p>
 <p>作者在这里提到这个搜索效率很高，因为数据库中的图片数量远远小于SfM模型中特征点的数量。</p></li>
 <li><p>Covisibility clustering</p>
-<p>这一步作者将前一步所得的<span class="math inline">\(k\)</span>个关键帧对应的pose的进行聚类，找到位置最集中的places作为候选。</p></li>
+<p>这一步作者将前一步所得的<span
+class="math inline">\(k\)</span>个关键帧对应的pose的进行聚类，找到位置最集中的places作为候选。</p></li>
 <li><p>Local feature matching</p>
-<p>利用第二步所得到的每一个place，我们可以得到每个place中的3D点信息。结合query image的2D点信息，作者用了PnP和RANSAC来做2D-3D匹配。</p></li>
+<p>利用第二步所得到的每一个place，我们可以得到每个place中的3D点信息。结合query
+image的2D点信息，作者用了PnP和RANSAC来做2D-3D匹配。</p></li>
 </ol>
 <p>整体的框架如下图所示</p>
 <figure>
-<img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220824100406128.png" alt="Hierarchical Localization" /><figcaption>Hierarchical Localization</figcaption>
+<img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220824100406128.png"
+alt="Hierarchical Localization" />
+<figcaption aria-hidden="true">Hierarchical Localization</figcaption>
 </figure>
-<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220823222256286.png" /></p>
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220823222256286.png" /></p>
 <h2 id="hf-net-architecture">HF-Net Architecture</h2>
 <p>文章设计的网络主要包括两个部分</p>
 <ol type="1">
@@ -310,58 +308,89 @@
 <p>在两个部分中，基于推理性能的考量，都选择了MobileNet作为Backbone。</p>
 <p>基于MobileNet的encoder也被分为两个部分，第一部分由两个部分共享，第二部分由NetVLAD独享。设计的理由如下：</p>
 <blockquote>
-<p>In SOTA images retrieval network, the global descriptors are usually computed from the aggregation of local feature maps, which might be useful to predict local features.</p>
+<p>In SOTA images retrieval network, the global descriptors are usually
+computed from the aggregation of local feature maps, which might be
+useful to predict local features.</p>
 </blockquote>
 <p>设计如下图所示：</p>
 <figure>
-<img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220824100519076.png" alt="Architecture" /><figcaption>Architecture</figcaption>
+<img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220824100519076.png"
+alt="Architecture" />
+<figcaption aria-hidden="true">Architecture</figcaption>
 </figure>
 <h2 id="training-process">Training Process</h2>
 <p>在这个部分，作者首先讨论了训练会遇到的问题。</p>
 <ul>
 <li><p>Data Scarcity</p>
-<p>对于文章中要解决的特征匹配任务，需要的<strong>数据量很大</strong>，且需要同时包含local descriptor和global descriptor的ground truth，然而这样的数据非常难以获取。</p>
+<p>对于文章中要解决的特征匹配任务，需要的<strong>数据量很大</strong>，且需要同时包含local
+descriptor和global descriptor的ground
+truth，然而这样的数据非常难以获取。</p>
 <p>除此之外，作者还提到了数据应该涵盖不同天气，季节，白天夜晚的情况。</p>
 <p>同时满足上述要求的数据集几乎不存在。</p></li>
 <li><p>Data augmentation</p>
 <p>SuperPoint使用了自监督的方法，大量使用了数据增强来保证训练的网络在应对不同光照条件，图像模糊等情况的时候有较好的性能。然而，作者认为，这种数据增强对局部特征的学习有很好的效果，但是会让全局特征的学习变得困难(challenging)。</p></li>
 </ul>
-<p>针对这两个问题，作者提出了使用Multi-task distilation来解决。作者主要使用了文章<a href="#ref2">[2]</a>中的方法，这篇论文我没有读过，在本文中作者也没有做更多的解释，在这里就直接拿作者给的结论了。根据这篇文章，作者设计出了下面这个Loss Function</p>
-<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220823222056978.png" /></p>
+<p>针对这两个问题，作者提出了使用Multi-task
+distilation来解决。作者主要使用了文章<a
+href="#ref2">[2]</a>中的方法，这篇论文我没有读过，在本文中作者也没有做更多的解释，在这里就直接拿作者给的结论了。根据这篇文章，作者设计出了下面这个Loss
+Function</p>
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220823222056978.png" /></p>
 <p>作者还提到了，这个设计可以用到其他的任务上去，特别是训练数据难以获取的多任务学习，以及一些compute-intensive的传统descriptors的情况。</p>
 <p>那么剩下的问题就是，如何选择多任务蒸馏中的Teacher了，作者是通过对比实验的结果解决了这个问题。</p>
 <ul>
 <li>作者首先对比了不同的detector的性能：</li>
 </ul>
-<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220824085601258.png" /></p>
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220824085601258.png" /></p>
 <p>可以发现SuperPoint是一个在Repeatability上和MLE的trade-off比较好的detector。虽然Harris看起来效果也不错，但为什么不选，后面说。</p>
 <ul>
 <li>之后是Descriptor</li>
 </ul>
-<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220824090357564.png" /></p>
-<p>在这里DOAP的效果是最好的（因为DOAP在HPatches上训练，所以这里没有列出结果）。作者这里做了一个将SuperPoint和Harris detector结合的实验，从中发现尽管Harris是一个可复现性（repeatability）高的detector，但是这二者结合的效果非常差，作者认为学习descriptors和对应的dectections是高度耦合的。</p>
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220824090357564.png" /></p>
+<p>在这里DOAP的效果是最好的（因为DOAP在HPatches上训练，所以这里没有列出结果）。作者这里做了一个将SuperPoint和Harris
+detector结合的实验，从中发现尽管Harris是一个可复现性（repeatability）高的detector，但是这二者结合的效果非常差，作者认为学习descriptors和对应的dectections是高度耦合的。</p>
 <ul>
 <li>最后作者在Aachen Day-Night数据集上继续测试</li>
 </ul>
-<p><img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220824090855093.png" /></p>
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220824090855093.png" /></p>
 <p>实验结果显示，SuperPoint比DOAP对白天夜晚具有更高的鲁棒性，DOAP在夜晚的情况下性能下降，作者认为原因是SP基于复杂的数据增强。在这里如果对比NV+SP和NV+HF-Net两列，可以发现HF-Net的性能更好，但是HF-Net本身是由SP蒸馏得到，性能应该会比SP差一点。作者给出的理由是：</p>
 <blockquote>
-<p>Comparing NV+SP with NV+HF, we note that local HF-Net features perform better than the SuperPoint model that was used to train them. This demonstrates the benefits of multi-task distillation, where the supervision signal from the global teacher can improve intermediate features and help local descriptors.</p>
+<p>Comparing NV+SP with NV+HF, we note that local HF-Net features
+perform better than the SuperPoint model that was used to train them.
+This demonstrates the benefits of multi-task distillation, where the
+supervision signal from the global teacher can improve intermediate
+features and help local descriptors.</p>
 </blockquote>
 <p>最终作者选择了SuperPoint作为局部描述的Teacher。对于全局描述，作者选择了NetVLAD。</p>
 <h2 id="experiments">Experiments</h2>
 <p>这部分就直接贴结果了，主要就是精度和速度。</p>
 <figure>
-<img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220824091810266.png" alt="Result 1" /><figcaption>Result 1</figcaption>
+<img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220824091810266.png"
+alt="Result 1" />
+<figcaption aria-hidden="true">Result 1</figcaption>
 </figure>
 <figure>
-<img src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220824091753543.png" alt="Result 2" /><figcaption>Result 2</figcaption>
+<img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220824091753543.png"
+alt="Result 2" />
+<figcaption aria-hidden="true">Result 2</figcaption>
 </figure>
 <h1 id="reference">Reference</h1>
 <ol type="1">
-<li>Sarlin, Paul-Edouard, et al. "From coarse to fine: Robust hierarchical localization at large scale." Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition. 2019.</li>
-<li>Kendall, Alex, Yarin Gal, and Roberto Cipolla. "Multi-task learning using uncertainty to weigh losses for scene geometry and semantics." Proceedings of the IEEE conference on computer vision and pattern recognition. 2018.<a name="ref2"></a></li>
-<li><a target="_blank" rel="noopener" href="http://www.liuxiao.org/2020/07/%e8%ae%ba%e6%96%87%e7%ac%94%e8%ae%b0%ef%bc%9afrom-coarse-to-fine-robust-hierarchical-localization-at-large-scale/">刘骁大佬的分析文章</a></li>
+<li>Sarlin, Paul-Edouard, et al. "From coarse to fine: Robust
+hierarchical localization at large scale." Proceedings of the IEEE/CVF
+Conference on Computer Vision and Pattern Recognition. 2019.</li>
+<li>Kendall, Alex, Yarin Gal, and Roberto Cipolla. "Multi-task learning
+using uncertainty to weigh losses for scene geometry and semantics."
+Proceedings of the IEEE conference on computer vision and pattern
+recognition. 2018.<a name="ref2"></a></li>
+<li><a
+target="_blank" rel="noopener" href="http://www.liuxiao.org/2020/07/%e8%ae%ba%e6%96%87%e7%ac%94%e8%ae%b0%ef%bc%9afrom-coarse-to-fine-robust-hierarchical-localization-at-large-scale/">刘骁大佬的分析文章</a></li>
 </ol>
 
     </div>
@@ -380,6 +409,7 @@
               <a href="/tags/Pose-Estimation/" rel="tag"># Pose Estimation</a>
               <a href="/tags/Structure-from-Motion-SfM/" rel="tag"># Structure from Motion (SfM)</a>
               <a href="/tags/Point-set-registration/" rel="tag"># Point-set registration</a>
+              <a href="/tags/Thesis/" rel="tag"># Thesis</a>
           </div>
 
         

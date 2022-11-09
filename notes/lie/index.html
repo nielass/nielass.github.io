@@ -32,6 +32,7 @@
 <meta property="article:author" content="Nielass">
 <meta property="article:tag" content="State Estimation">
 <meta property="article:tag" content="Optimization">
+<meta property="article:tag" content="Thesis">
 <meta name="twitter:card" content="summary">
 
 
@@ -142,18 +143,18 @@ in manifolds and covariance propagation</span></a></li><li class="nav-item nav-l
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-count">12</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-count">11</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-count">27</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -800,7 +801,53 @@ right-left Jacobians，用的少，不在这里介绍了。</p>
 src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220926153032509.png" /></p>
 <h1 id="uncertainty-in-manifolds-and-covariance-propagation">Uncertainty
 in manifolds and covariance propagation</h1>
-<p>todo</p>
+<p>我们定义一个在点<span class="math inline">\(\bar{\mathcal X} \in
+\mathcal M\)</span>处的局部扰动（local perturbation）<span
+class="math inline">\(\boldsymbol \tau \in T_{\bar {\mathcal X}}\mathcal
+M\)</span>： <span class="math display">\[
+\begin{align}
+\mathcal X &amp;= \bar{\mathcal X} \oplus \boldsymbol \tau \\
+\boldsymbol \tau &amp;= \mathcal X \ominus \bar{\mathcal X}
+\end{align}
+\]</span> 协方差矩阵（covariance matrices）可以被定义如下： <span
+class="math display">\[
+\Sigma_{\mathcal X} \triangleq \mathbb E\left[\boldsymbol \tau
+\boldsymbol \tau^T \right] \in \mathbb R^{m\times m}
+\]</span> 同时我们还可以定义流形上的高斯分布<span
+class="math inline">\(\mathcal X \sim \mathcal N(\bar{\mathcal
+X},\Sigma_{\mathcal X})\)</span>，见下图：</p>
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220928103737134.png" /></p>
+<p>上述扰动是用右加减定义的，我们还可以通过左加减定义扰动，此时坐标系是全局参考系<span
+class="math inline">\(\boldsymbol \tau \in T_{\mathcal E}\mathcal
+M\)</span>： <span class="math display">\[
+\begin{align}
+\mathcal X &amp;=  \boldsymbol \tau \oplus  \bar{\mathcal X}\\
+\boldsymbol \tau &amp;= \mathcal X \ominus \bar{\mathcal X}
+\end{align}
+\]</span> 上述二者之间的转换关系可以由伴随矩阵（adjoint matrix）给出：
+<span class="math display">\[
+^\mathcal E \Sigma_{\mathcal X} \approx \textbf{Ad}_\mathcal X \
+^\mathcal X \Sigma_{\mathcal X} \ \textbf{Ad}_\mathcal X^T
+\]</span>
+很多时候我们需要将流形上的扰动或者速度进行分段积分来求得总变化，我们可以写成如下形式：
+<span class="math display">\[
+\mathcal X_{k} = \mathcal X_{0} \circ \text{Exp}(\mathbf v_1\delta t_1)
+\circ \text{Exp}(\mathbf v_2\delta t_2) \circ \text{Exp}(\mathbf
+v_3\delta t_3) ... \circ \text{Exp}(\mathbf v_k\delta t_k)
+\]</span> 或者 <span class="math display">\[
+\mathcal X_{k} = \mathcal X_{0} \oplus \mathbf v_1\delta t_1 \oplus
+\mathbf v_2\delta t_2 \oplus \mathbf v_3\delta t_3 ... \oplus \mathbf
+v_k\delta t_k
+\]</span> 我们可以定义<span class="math inline">\(\boldsymbol \tau_k =
+\mathbf v_k\delta t_k\)</span>，并把上式写成递归形式： <span
+class="math display">\[
+\mathcal X_{k} = \mathcal X_{k-1} \oplus \boldsymbol \tau_k = \mathcal
+X_{k-1} \circ \text{Exp}(\boldsymbol \tau_k) = \mathcal X_{k-1} \circ
+\text{Exp}(\mathbf v_k\delta t_k)
+\]</span> 如下图所示：</p>
+<p><img
+src="https://nielasspic.oss-cn-hangzhou.aliyuncs.com/img/image-20220928103750906.png" /></p>
 <h1 id="reference">Reference</h1>
 <ol type="1">
 <li>Sola, Joan, Jeremie Deray, and Dinesh Atchuthan. "A micro Lie theory
@@ -827,6 +874,7 @@ algebra</a></li>
           <div class="post-tags">
               <a href="/tags/State-Estimation/" rel="tag"># State Estimation</a>
               <a href="/tags/Optimization/" rel="tag"># Optimization</a>
+              <a href="/tags/Thesis/" rel="tag"># Thesis</a>
           </div>
 
         
@@ -838,6 +886,9 @@ algebra</a></li>
                 </a>
             </div>
             <div class="post-nav-item">
+                <a href="/notes/nvim-win/" rel="next" title="Neovim配置笔记--从Linux到Win10">
+                  Neovim配置笔记--从Linux到Win10 <i class="fa fa-chevron-right"></i>
+                </a>
             </div>
           </div>
     </footer>
